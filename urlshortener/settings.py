@@ -24,6 +24,10 @@ DEV_DB_PORT = config('DEV_DB_PORT')
 USE_PROD_REDIS = config('USE_PROD_REDIS', default=False, cast=bool)
 DEV_REDIS_URL = config('DEV_REDIS_URL')
 
+# Misc
+BASE_URL = config('BASE_URL')
+DEFAULT_HASH_LENGTH = config('DEFAULT_HASH_LENGTH', default=6, cast=int)
+
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -40,11 +44,16 @@ INSTALLED_APPS = [
 
 	## Third-party apps
 	'django_extensions',
+	'captcha',
+	'tailwind',
+	'django_browser_reload',
 
 	## My apps
 	'users',
+	'home',
 	'shorten',
-	
+	'theme',  # For django-tailwind
+
 ]
 
 MIDDLEWARE = [
@@ -58,6 +67,11 @@ MIDDLEWARE = [
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 	# 'django_hosts.middleware.HostsResponseMiddleware',  # for django_hosts
 ]
+
+if DEBUG:
+	# For django_browser_reload
+	MIDDLEWARE.append('django_browser_reload.middleware.BrowserReloadMiddleware')
+
 
 ROOT_URLCONF = 'urlshortener.urls'
 
@@ -174,3 +188,10 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+## THIRD-PARTY APP SETTINGS
+# django-tailwind
+TAILWIND_APP_NAME = 'theme'
+INTERNAL_IPS = ALLOWED_HOSTS
+
