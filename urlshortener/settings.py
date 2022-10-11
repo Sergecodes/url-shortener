@@ -191,6 +191,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
 ## THIRD-PARTY APP SETTINGS
+# geoip2
+GEOIP_PATH = BASE_DIR / 'geoip_db'
+
+
 # django-tailwind
 TAILWIND_APP_NAME = 'theme'
 INTERNAL_IPS = ALLOWED_HOSTS

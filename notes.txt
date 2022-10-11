@@ -1,12 +1,13 @@
+source /home/sergeman/.virtualenvs/urlshortener-env/bin/activate 
+
+
 - use whitenoise, possibly with a cdn like cloudfront
 - use django hosts (eg for admin section)
-- use django simple captcha
 - use cache mechanism, eg. redis; 
    - save both in db and cache, when retrieving, first try in cache. if not found, then check db.
 -
 
 whitenoise==
-django-simple-captcha==
 django-debug-toolbar==
 crispy-bootstrap5==
 
@@ -19,3 +20,8 @@ TODO:
    FRONTEND:
       - 
       -
+
+TO INSTALL:
+- install nodejs
+- setup django-tailwind (https://django-tailwind.readthedocs.io/en/latest/installation.html)
+- setup geoip2 (https://docs.djangoproject.com/en/3.2/ref/contrib/gis/geoip2)

@@ -7,3 +7,4 @@ shortuuid==1.0.9
 django-simple-captcha==0.5.17
 django-tailwind==3.4.0
 django-ipware==4.0.2
+geoip2==4.6.0

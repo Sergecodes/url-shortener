@@ -1,0 +1,60 @@
+{% load static tailwind_tags %}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>
+			{% block title %}URL Shortener - Tinyy{% endblock %}
+		</title>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		{% tailwind_css %}
+		<link rel="stylesheet" href="{% static 'css/base.css' %}">
+	</head>
+
+	<body class="bg-gray-50 font-mono">
+		{% block header %}
+		<header class="shadow py-4 text-lg sm:px-8 sm:text-xl lg:px-28">
+			<a class="text-3xl text-transparent block mb-6 text-center md:inline hover:text-[2.2rem] header__title" href="#">
+				TINYY.<sub>ink</sub>
+			</a>
+			<nav class="float-none md:float-right sm:max-h-[28px]">
+				<ul class="flex gap-7 sm:gap-10 justify-center">
+					<li>
+						<a href="#" class="text-teal-500 sm:hover:text-[2.1rem]">FAQ</a>
+					</li>
+					<li>
+						<a href="#" class="text-teal-500 sm:hover:text-[2.1rem]">My URLs</a>
+					</li>
+					<li>
+						<a href="#" class="border border-solid p-3 rounded-full text-red-400 hover:border-gray-400">
+							Support ❤️
+						</a>
+					</li>
+				</ul>
+			</nav>
+		</header>
+		{% endblock %}
+
+		{% block content %}
+		<div class="container mx-auto">
+			<section class="flex items-center justify-center h-screen">
+				<h1 class="text-5xl">Django + Tailwind = ❤️</h1>
+			</section>
+		</div>
+		{% endblock %}
+
+		{% block footer %}
+		<footer class="pt-8 pb-4 border-solid border-t-2 bg-teal-500 text-xl text-white">
+			<ul class="flex gap-14 lg:gap-28 justify-center mb-5 sm:max-h-[28px] overflow-hidden">
+				{# text-right is used to send text to right when it spans two lines #}
+				<li class="text-right"><a href="#" class="sm:hover:text-2xl">Send email</a></li>
+				<li><a href="#" class="sm:hover:text-2xl">GitHub</a></li>
+				<li><a href="#" class="sm:hover:text-2xl">Cup of coffee</a></li>
+			</ul>
+			<p class="text-center">&copy; {% now 'Y' %}</p>
+		</footer>
+		{% endblock %}
+	</body>
+</html>
