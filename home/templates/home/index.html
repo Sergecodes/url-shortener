@@ -1,1 +1,26 @@
 {% extends "theme/base.html" %}
+
+
+{% block content %}
+<div class="container mt-[15vh] h-screen mx-auto">
+   <!-- Form -->
+   <section class="shadow pt-8 pb-12">
+      <h1 class="text-4xl text-center text-gray-600 mb-6">
+         Enter the URL to be shortened
+      </h1>
+      <form id="url-form" class="flex flex-col gap-y-8 text-center">
+         {% csrf_token %}
+         {{ form.as_p }}
+         <button class="mx-auto text-teal-500 text-xl">
+            Go <i class="fa fa-arrow-right"></i>
+         </button>
+      </form>
+   </section>
+   
+   <!-- FAQ -->
+   <section>
+
+   </section>
+</div>
+{% endblock %}
+

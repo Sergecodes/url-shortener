@@ -1,5 +1,35 @@
 
+:root {
+   --teal: #14b8a6;
+}
+
+
+.no-style-btn {
+   border: none;
+   background: none;
+}
+
 .header__title {
-   text-shadow: #14b8a6 0px 0px 2px;
+   text-shadow: var(--teal) 0px 0px 2px;
+}
+
+#url-form .captcha {
+   margin-left: auto;
+   margin-right: auto;
+}
+
+#url-form #id_captcha_1,
+#url-form #id_captcha_1:focus {
+   text-align: center;
+}
+
+#url-form #id_url:focus,
+#url-form #id_captcha_1:focus {
+   box-shadow: var(--teal);
+   border-color: var(--teal);
+}
+
+#url-form #id_url {
+   width: 80%;
 }
 

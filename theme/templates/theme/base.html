@@ -10,6 +10,7 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
 		{% tailwind_css %}
+		<link rel="stylesheet" href="{% static 'fontawesomefree/css/all.min.css' %}">
 		<link rel="stylesheet" href="{% static 'css/base.css' %}">
 	</head>
 
@@ -38,11 +39,6 @@
 		{% endblock %}
 
 		{% block content %}
-		<div class="container mx-auto">
-			<section class="flex items-center justify-center h-screen">
-				<h1 class="text-5xl">Django + Tailwind = ❤️</h1>
-			</section>
-		</div>
 		{% endblock %}
 
 		{% block footer %}

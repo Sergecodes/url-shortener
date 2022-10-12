@@ -10,4 +10,11 @@ class URLForm(forms.ModelForm):
    class Meta:
       model = URL
       fields = ['captcha', 'url']
-
+      widgets = {
+			'url': forms.URLInput(attrs={
+            'placeholder': 'Paste URL here',
+         }),
+		}
+      labels = {
+         'url': ''
+      }

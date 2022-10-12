@@ -46,15 +46,19 @@ INSTALLED_APPS = [
 	'django_extensions',
 	'captcha',
 	'tailwind',
-	'django_browser_reload',
+	'fontawesomefree',
 
 	## My apps
 	'users',
 	'home',
 	'shorten',
-	'theme',  # For django-tailwind
+	'theme',    # For django-tailwind
 
 ]
+
+if DEBUG:
+	INSTALLED_APPS.append('django_browser_reload')
+
 
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
