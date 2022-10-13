@@ -13,9 +13,15 @@
    text-shadow: var(--teal) 0px 0px 2px;
 }
 
+.helptext {
+   display: block;
+   color: gray;
+   font-size: 0.8rem;
+}
+
+/* captcha image */
 #url-form .captcha {
-   margin-left: auto;
-   margin-right: auto;
+   display: inline;
 }
 
 #url-form #id_captcha_1,
@@ -24,7 +30,8 @@
 }
 
 #url-form #id_url:focus,
-#url-form #id_captcha_1:focus {
+#url-form #id_captcha_1:focus,
+#url-form #id_hash:focus {
    box-shadow: var(--teal);
    border-color: var(--teal);
 }
@@ -32,4 +39,19 @@
 #url-form #id_url {
    width: 80%;
 }
+
+#url-form label[for='id_hash'] {
+   display: block;
+}
+
+#url-form > p:last-of-type {
+   text-align: left;
+   margin-left: 9vw;
+}
+
+#url-form #id_hash {
+   padding-top: 0.25rem;
+   padding-bottom: 0.25rem;
+}
+
 

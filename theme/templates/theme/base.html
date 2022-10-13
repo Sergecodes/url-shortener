@@ -9,9 +9,12 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		{% comment %} <link rel="shortcut icon" type="image/x-icon" href="{% static 'icons/favicon.ico' %}"> {% endcomment %}
 		{% tailwind_css %}
 		<link rel="stylesheet" href="{% static 'fontawesomefree/css/all.min.css' %}">
 		<link rel="stylesheet" href="{% static 'css/base.css' %}">
+		<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+		<script src="{% static 'js/jquery.blockUI.js' %}"></script>
 	</head>
 
 	<body class="bg-gray-50 font-mono">
@@ -51,6 +54,32 @@
 			</ul>
 			<p class="text-center">&copy; {% now 'Y' %}</p>
 		</footer>
+		{% endblock %}
+
+		<script src="{% static 'js/base.js' %}"></script>
+		{% comment %} <script>
+			$(document).ajaxStart(function() {
+				// console.log("ajax started");
+				$.blockUI({ 
+					css: {
+						border: 'none',
+						padding: '12px',
+						backgroundColor: '#000',
+						'-webkit-border-radius': '10px',
+						'-moz-border-radius': '10px',
+						opacity: .5,
+						color: '#fff'
+					},
+					message: "<h1>Please wait...</h1>",
+				});
+			});
+	
+			$(document).ajaxStop(function() {
+				// console.log("ajax ok");
+				$.unblockUI();
+			});
+		</script> {% endcomment %}
+		{% block extra_js %}
 		{% endblock %}
 	</body>
 </html>

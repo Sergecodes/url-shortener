@@ -15,7 +15,7 @@ class URLForm(forms.ModelForm):
       max_length=24,  # Well let's just say 24
       required=False,
       help_text= 
-         'Not required. Your desired shortened url alias (it will be used as the short url). <br>'
+         'Not required. Your desired shortened url alias(it will be used as the short url). <br>'
          'eg. if you enter "hello", your generated shortened url will be "{}/hello".'.format(BASE_URL),
    )  
 
