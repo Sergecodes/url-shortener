@@ -27,7 +27,7 @@ DEV_REDIS_URL = config('DEV_REDIS_URL')
 # Misc
 BASE_URL = config('BASE_URL')
 DEFAULT_HASH_LENGTH = config('DEFAULT_HASH_LENGTH', default=6, cast=int)
-
+USE_CAPTCHA = config('USE_CAPTCHA', default=True, cast=bool)
 
 AUTH_USER_MODEL = 'users.User'
 
