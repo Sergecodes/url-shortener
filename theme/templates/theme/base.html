@@ -12,8 +12,17 @@
 		{% comment %} <link rel="shortcut icon" type="image/x-icon" href="{% static 'icons/favicon.ico' %}"> {% endcomment %}
 		{% tailwind_css %}
 		<link rel="stylesheet" href="{% static 'fontawesomefree/css/all.min.css' %}">
+		{% comment %} <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"> {% endcomment %}
+		<link rel="stylesheet" href="{% static 'css/toastify.min.css' %}">
+		{% comment %} <link rel="stylesheet" href="https://unpkg.com/accordion-js@3.3.2/dist/accordion.min.css"> {% endcomment %}
+		<link rel="stylesheet" href="{% static 'css/accordion.min.css' %}">
 		<link rel="stylesheet" href="{% static 'css/base.css' %}">
+
 		<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
+		{% comment %} <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script> {% endcomment %}
+		<script src="{% static 'js/toastify-js.js' %}"></script>
+		{% comment %} <script src="https://unpkg.com/accordion-js@3.3.2/dist/accordion.min.js"></script> {% endcomment %}
+		<script src="{% static 'js/accordion.min.js' %}"></script>
 		<script src="{% static 'js/jquery.blockUI.js' %}"></script>
 	</head>
 
@@ -57,8 +66,37 @@
 		{% endblock %}
 
 		<script src="{% static 'js/base.js' %}"></script>
-		{% comment %} <script>
-			$(document).ajaxStart(function() {
+		<script>
+			$(function() {
+				$(document).ajaxError(function(event, jqXHR, settings, thrownError) {
+					console.log(jqXHR);
+					console.log(settings);
+
+					var defaultMsg = (function() {
+						var main = "An error occured, refresh the page and try again. <br> <a href='mailto:sergedurand205@gmail.com' style='text-decoration: underline;'>Contact us</a> if it persists.";
+
+						if (jqXHR.responseJSON.data) {
+							return jqXHR.responseJSON.data;
+						} else if (jqXHR.responseJSON.code == 'HASH_UNAVAILABLE') {
+							return 'Alias unavailable, please use another one or let us choose one for you.';
+						}
+
+						return main;
+					})();
+
+					Toastify({
+						text: defaultMsg,
+						duration: 3500,
+						escapeMarkup: false,
+						style: {
+							cursor: 'default',
+							background: 'linear-gradient(to right, #8e0e00, #1f1c18)'
+						}
+					}).showToast();
+				});
+			});
+
+			{% comment %} $(document).ajaxStart(function() {
 				// console.log("ajax started");
 				$.blockUI({ 
 					css: {
@@ -77,8 +115,8 @@
 			$(document).ajaxStop(function() {
 				// console.log("ajax ok");
 				$.unblockUI();
-			});
-		</script> {% endcomment %}
+			}); {% endcomment %}
+		</script>
 		{% block extra_js %}
 		{% endblock %}
 	</body>

@@ -18,6 +18,32 @@
    
    <!-- FAQ -->
    <section>
+      <div class="accordion-container">
+         <div class="ac">
+            <h2 class="ac-header">
+               <button type="button" class="ac-trigger">
+                  Lorem ipsum bla bla bla
+               </button>
+            </h2>
+            <div class="ac-panel">
+               <p class="ac-text">
+                  Lorem ipsum
+               </p>
+            </div>
+         </div>
+         <div class="ac">
+            <h2 class="ac-header">
+               <button type="button" class="ac-trigger">
+                  Lorem ipsum bla bla bla
+               </button>
+            </h2>
+            <div class="ac-panel">
+               <p class="ac-text">
+                  Lorem ipsum
+               </p>
+            </div>
+         </div>
+      </div>
    </section>
 </div>
 {% endblock %}
@@ -27,19 +53,24 @@
 <script>
    var csrfToken = "{{ csrf_token }}";
 
+   // Initialize faq questions
+   new Accordion('.accordion-container');
+
    /* Display reload icon after captcha label */
    var reloadIcon = document.createElement('i');
    reloadIcon.setAttribute('aria-label', 'Change captcha');
    reloadIcon.setAttribute('title', 'Change captcha');
-   reloadIcon.classList = 'fa fa-circle';
+   reloadIcon.classList = 'fa fa-refresh';
    // Remember, can't use tailwindcss classes in classlist
-   reloadIcon.style = "margin-right: 2rem; margin-left: 0.75rem";
+   reloadIcon.style = "margin-right: 2rem; margin-left: 0.75rem; color: rgb(75 85 99);";
    reloadIcon.setAttribute('onclick', 'onReloadCaptcha();');
 
    var label = document.querySelector("label[for='id_captcha_1']");
    label.after(reloadIcon);
 
    function onReloadCaptcha() {
+      reloadIcon.classList.add('fa-spin');
+
       $.ajax({
          url: "{% url 'captcha-refresh' %}",
          success: function(result) {
@@ -49,18 +80,17 @@
             imgEl.src = result.image_url;
             keyEl.value = result.key;
          },
-         error: function() {
-            console.log("error");
+         complete: function() {
+            reloadIcon.classList.remove('fa-spin');
          }
       });
    }
 
    function onSubmitURLForm() {
       event.preventDefault();
-      console.log(event);
       var form = event.target;
 
-      // Change icon so spinner
+      // Change icon to spinner
       var goIcon = form.querySelector('#go-icon');
       goIcon.classList.remove('fa-arrow-right');
       goIcon.classList.add('fa-spinner', 'fa-spin');
@@ -68,20 +98,14 @@
       $.ajax({
          type: 'POST',
          url: "{% url 'shorten:ajax-shorten-url' %}",
-         data: {
-
-         },
+         data: Object.fromEntries(new FormData(form)),
          beforeSend: function (xhr) {
             xhr.setRequestHeader("X-CSRFToken", csrfToken);
          },
          success: function(result, status, jqXHR) {
             console.log(result);
          },
-         error: function(jqXHR, status, error) {
-            console.error(error);
-         },
-         always: function() {
-            console.log("done");
+         complete: function(jqXHR, textStatus) {
             goIcon.classList.remove('fa-spinner', 'fa-spin');
             goIcon.classList.add('fa-arrow-right');
          }
