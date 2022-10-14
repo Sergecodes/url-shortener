@@ -8,4 +8,7 @@ django-simple-captcha==0.5.17
 django-tailwind==3.4.0
 django-ipware==4.0.2
 geoip2==4.6.0
-fontawesomefree=6.2.0
+fontawesomefree==6.2.0
+ua-parser==0.16.1 
+user-agents==2.2.0
+django-user-agents==0.4.0

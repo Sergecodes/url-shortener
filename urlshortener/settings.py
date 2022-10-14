@@ -4,7 +4,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -47,6 +46,7 @@ INSTALLED_APPS = [
 	'captcha',
 	'tailwind',
 	'fontawesomefree',
+	'django_user_agents',
 
 	## My apps
 	'users',
@@ -69,6 +69,7 @@ MIDDLEWARE = [
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django_user_agents.middleware.UserAgentMiddleware',
 	# 'django_hosts.middleware.HostsResponseMiddleware',  # for django_hosts
 ]
 
