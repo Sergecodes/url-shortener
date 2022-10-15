@@ -25,7 +25,11 @@ class URLForm(forms.ModelForm):
       widgets = {
 			'url': forms.URLInput(attrs={
             'placeholder': 'Paste URL here',
+            'value': 'https://'
          }),
 		}
       labels = {'url': ''}
+      help_texts = {
+         'url': 'The protocol/scheme(eg. http, https, ftp) should be included.'
+      }
 

@@ -1,5 +1,6 @@
 {% extends "theme/base.html" %}
 
+
 {% block content %}
 <div class="container mt-[10vh] mx-auto">
    <!-- Form -->
@@ -104,6 +105,18 @@
          </div>
       </div>
    </section>
+
+   <!-- Shortened url result modal -->
+   <button class="none" id="modalTriggerer" data-hystmodal="#resultModal"></button>
+   <div class="hystmodal" id="resultModal" aria-hidden="true">
+      <div class="hystmodal__wrap">
+         <div class="hystmodal__window" role="dialog" aria-modal="true">
+            <button data-hystclose class="hystmodal__close" aria-label="Close">
+            </button>
+            <p class="py-auto">This is the modal content</p>
+         </div>
+      </div>
+   </div>
 </div>
 {% endblock %}
 
@@ -114,6 +127,13 @@
 
    // Initialize faq questions
    new Accordion('.accordion-container');
+
+   // Initialize result modal
+   var modal = new HystModal({
+      closeOnOverlay: true,
+      closeOnEsc: true,
+      closeOnButton: true,
+   });
 
    /* Display reload icon after captcha label */
    var reloadIcon = document.createElement('i');
@@ -167,6 +187,9 @@
             console.log(result);
             // Get new captcha(the previous captcha will be invalid)
             reloadIcon.click();
+
+            // Display modal
+            modal.open('#resultModal');
          },
          complete: function(jqXHR, textStatus) {
             goIcon.classList.remove('fa-spinner', 'fa-spin');

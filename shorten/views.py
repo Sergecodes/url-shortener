@@ -33,12 +33,7 @@ def shorten_url(request):
 					defaults={'name': list(get_browser_dict(request))[0]}
 				)
 				long_url, __ = URL.objects.get_or_create(url=url)
-				short_url, __ = ShortURL.objects.get_or_create(
-					long_url=long_url,
-					browser=browser
-				)
-				print('created', __)
-				
+				short_url, __ = ShortURL.objects.get_or_create(long_url=long_url, browser=browser)
 				return JsonResponse({'hash': short_url.hash}, status=201)
 		else:
 			# Hash has already been used
