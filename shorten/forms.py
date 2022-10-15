@@ -29,8 +29,3 @@ class URLForm(forms.ModelForm):
 		}
       labels = {'url': ''}
 
-   def clean_url(self):
-      url = self.cleaned_data['url']
-      # TODO convert url to normalized form... ? check other url-shortener sites
-      # eg. https://google.com & google.com & www.google.com are the same.
-      return url

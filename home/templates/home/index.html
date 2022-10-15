@@ -1,9 +1,9 @@
 {% extends "theme/base.html" %}
 
 {% block content %}
-<div class="container mt-[15vh] h-screen mx-auto">
+<div class="container mt-[10vh] mx-auto">
    <!-- Form -->
-   <section class="shadow pt-8 pb-12">
+   <section class="shadow pt-8 pb-12 mb-20">
       <h1 class="text-4xl text-center text-gray-600 mb-6">
          Enter the URL to be shortened
       </h1>
@@ -17,29 +17,88 @@
    </section>
    
    <!-- FAQ -->
-   <section>
+   <section class="shadow-sm pt-8 mb-20">
+      <a name="faq"></a>
+      <h1 class="text-3xl text-center text-gray-600 mb-10">
+         Infrequently asked questions
+         <span class="block text-sm text-gray-400">with a grain of humor</span>
+      </h1>
       <div class="accordion-container">
          <div class="ac">
             <h2 class="ac-header">
                <button type="button" class="ac-trigger">
-                  Lorem ipsum bla bla bla
+                  What's a URL shortener?
                </button>
             </h2>
             <div class="ac-panel">
                <p class="ac-text">
-                  Lorem ipsum
+                  A URL shortener is basically a tool that converts a long url to a short one. 
+                  Generally, shorter URLs are more trustworthy. 
+                  For instance, you know those very long Facebook links right? Yes; tools like 
+                  URL shorteners can convert them to shorter and sexier links.
                </p>
             </div>
          </div>
          <div class="ac">
             <h2 class="ac-header">
                <button type="button" class="ac-trigger">
-                  Lorem ipsum bla bla bla
+                  What's a URL shortener?
                </button>
             </h2>
             <div class="ac-panel">
                <p class="ac-text">
-                  Lorem ipsum
+                  Already answered above. I don't even know why you clicked here.
+               </p>
+            </div>
+         </div>
+         <div class="ac">
+            <h2 class="ac-header">
+               <button type="button" class="ac-trigger">
+                  Why should i use this site?
+               </button>
+            </h2>
+            <div class="ac-panel">
+               <p class="ac-text">
+                  Coz it's a URL shortener and you're looking for one, duh
+               </p>
+            </div>
+         </div>
+         <div class="ac">
+            <h2 class="ac-header">
+               <button type="button" class="ac-trigger">
+                  Why should i support?
+               </button>
+            </h2>
+            <div class="ac-panel">
+               <p class="ac-text">
+                  Let's be serious now 😉, you should support to keep the site functioning. <br>
+                  Help me cover for server costs and whatnot, just coz you would like to help... <br>
+                  Thanks!
+               </p>
+            </div>
+         </div>
+         <div class="ac">
+            <h2 class="ac-header">
+               <button type="button" class="ac-trigger">
+                  Why should i NOT support?
+               </button>
+            </h2>
+            <div class="ac-panel">
+               <p class="ac-text">
+                  You should support!
+               </p>
+            </div>
+         </div>
+         <div class="ac">
+            <h2 class="ac-header">
+               <button type="button" class="ac-trigger">
+                  Why should i contact you?
+               </button>
+            </h2>
+            <div class="ac-panel">
+               <p class="ac-text">
+                  Uhm, same reason you contact other people? <br>
+                  Or you're like me and you don't contact people? 😁
                </p>
             </div>
          </div>
@@ -65,6 +124,7 @@
    reloadIcon.style = "margin-right: 2rem; margin-left: 0.75rem; color: rgb(75 85 99);";
    reloadIcon.setAttribute('onclick', 'onReloadCaptcha();');
 
+   var captchaInput = document.querySelector('#id_captcha_1');
    var label = document.querySelector("label[for='id_captcha_1']");
    label.after(reloadIcon);
 
@@ -79,6 +139,7 @@
             var keyEl = document.querySelector('#id_captcha_0');
             imgEl.src = result.image_url;
             keyEl.value = result.key;
+            captchaInput.value = '';
          },
          complete: function() {
             reloadIcon.classList.remove('fa-spin');
@@ -104,6 +165,8 @@
          },
          success: function(result, status, jqXHR) {
             console.log(result);
+            // Get new captcha(the previous captcha will be invalid)
+            reloadIcon.click();
          },
          complete: function(jqXHR, textStatus) {
             goIcon.classList.remove('fa-spinner', 'fa-spin');

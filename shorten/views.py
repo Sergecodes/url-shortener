@@ -7,35 +7,39 @@ from django.views.decorators.http import require_POST
 
 from .forms import URLForm
 from .models import URL, Browser, ShortURL, Visit
-from .utils import get_browser, get_ip
+from .utils import get_browser_dict, get_ip
 
 
 @require_POST
 def shorten_url(request):
 	"""This view handles shorten url request"""
-	print(request.body)
+	print(request.POST)
 	form = URLForm(request.POST)
 
 	if form.is_valid():
+		# Note that desired_hash could still be ''
 		url, desired_hash = form.cleaned_data['url'], form.cleaned_data['hash']
 
 		# Check if desired hash is available
-		if not ShortURL.objects.exists(hash=desired_hash):
-			with transaction.atomic():
-				browser_uuid = request.session.get('browser_uuid', str(uuid.uuid4()))
+		if not desired_hash or (desired_hash and not ShortURL.objects.filter(hash=desired_hash).exists()):
+			browser_uuid = request.session.get('browser_uuid')
+			if not browser_uuid:
+				browser_uuid = str(uuid.uuid4())
 				request.session['browser_uuid'] = browser_uuid
-				browser = Browser.objects.get_or_create(
+
+			with transaction.atomic():
+				browser, __ = Browser.objects.get_or_create(
 					uuid=browser_uuid, 
-					defaults={'name': get_browser()}
+					defaults={'name': list(get_browser_dict(request))[0]}
 				)
-					
-				long_url = URL.objects.get_or_create(url=url)
-				short_url = ShortURL.objects.create(
-					long_url=long_url, 
-					hash=desired_hash, 
+				long_url, __ = URL.objects.get_or_create(url=url)
+				short_url, __ = ShortURL.objects.get_or_create(
+					long_url=long_url,
 					browser=browser
 				)
-			return JsonResponse({'hash': short_url.hash}, status=201)
+				print('created', __)
+				
+				return JsonResponse({'hash': short_url.hash}, status=201)
 		else:
 			# Hash has already been used
 			return JsonResponse({'code': 'HASH_UNAVAILABLE'}, status=409)
@@ -52,7 +56,7 @@ def redirect_hash(request, hash):
 		short_url.save(update_fields=['num_visits'])
 		Visit.objects.create(
 			short_url=short_url, 
-			browser_name=get_browser(), 
+			browser_name=list(get_browser_dict(request))[0], 
 			ip_address=get_ip(request)
 		)
 

@@ -35,7 +35,7 @@
 			<nav class="float-none md:float-right sm:max-h-[28px]">
 				<ul class="flex gap-7 sm:gap-10 justify-center">
 					<li>
-						<a href="#" class="text-teal-500 sm:hover:text-[2.1rem]">FAQ</a>
+						<a href="#faq" class="text-teal-500 sm:hover:text-[2.1rem]">FAQ</a>
 					</li>
 					<li>
 						<a href="#" class="text-teal-500 sm:hover:text-[2.1rem]">My URLs</a>
@@ -55,7 +55,7 @@
 
 		{% block footer %}
 		<footer class="pt-8 pb-4 border-solid border-t-2 bg-teal-500 text-xl text-white">
-			<ul class="flex gap-14 lg:gap-28 justify-center mb-5 sm:max-h-[28px] overflow-hidden">
+			<ul class="flex gap-14 lg:gap-28 justify-center mb-5 sm:max-h-[28px]">
 				{# text-right is used to send text to right when it spans two lines #}
 				<li class="text-right"><a href="#" class="sm:hover:text-2xl">Send email</a></li>
 				<li><a href="#" class="sm:hover:text-2xl">GitHub</a></li>
@@ -74,9 +74,18 @@
 
 					var defaultMsg = (function() {
 						var main = "An error occured, refresh the page and try again. <br> <a href='mailto:sergedurand205@gmail.com' style='text-decoration: underline;'>Contact us</a> if it persists.";
+						var responseStr = jqXHR.responseJSON.data;
 
-						if (jqXHR.responseJSON.data) {
-							return jqXHR.responseJSON.data;
+						if (responseStr) {
+							// If we're on home page and captcha was not invalid,
+							// we need to refresh captcha (else captcha check won't validate).
+							if (
+								(typeof captchaInput !== 'undefined') && 
+								!('captcha' in JSON.parse(responseStr))
+							) {
+								reloadIcon.click();
+							}
+							return responseStr;
 						} else if (jqXHR.responseJSON.code == 'HASH_UNAVAILABLE') {
 							return 'Alias unavailable, please use another one or let us choose one for you.';
 						}

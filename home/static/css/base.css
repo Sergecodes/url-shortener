@@ -54,4 +54,13 @@
    padding-bottom: 0.25rem;
 }
 
+/* accordion */
+.accordion-container * {
+   /* taken from tailwind class font-mono */
+   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+}
+
+.accordion-container .ac-trigger {
+   font-weight: normal !important;
+}
 
