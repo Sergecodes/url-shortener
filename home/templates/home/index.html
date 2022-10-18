@@ -1,5 +1,18 @@
 {% extends "theme/base.html" %}
 
+{% block title %}
+<title>URL Shortener - Tinyy</title>
+{% endblock title %}
+
+{% block extra_assets %}
+{% comment %} <link rel="stylesheet" href="https://unpkg.com/accordion-js@3.3.2/dist/accordion.min.css"> {% endcomment %}
+<link rel="stylesheet" href="{% static 'css/accordion.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/hystmodal.min.css' %}">
+
+{% comment %} <script src="https://unpkg.com/accordion-js@3.3.2/dist/accordion.min.js"></script> {% endcomment %}
+<script src="{% static 'js/accordion.min.js' %}"></script>
+<script src="{% static 'js/hystmodal.min.js' %}"></script>
+{% endblock extra_assets %}
 
 {% block content %}
 <div class="container mt-[10vh] mx-auto">

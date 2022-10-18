@@ -11,7 +11,7 @@ urlpatterns = [
 
    # Make the path "shorten" unavailable as a hash
    path('shorten/', views.shorten_url, name='shorten-url'),
-   path('my-links/', views.my_links, name='my-links'),
+   path('my-urls/', views.my_urls, name='my-urls'),
    path('<str:hash>/preview/', views.preview_hash, name='preview-hash'),
    path('<str:hash>/', views.redirect_hash, name='redirect-hash'),
 

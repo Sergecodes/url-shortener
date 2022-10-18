@@ -3,9 +3,9 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>
-			{% block title %}URL Shortener - Tinyy{% endblock %}
-		</title>
+		{% block title %}
+		{% endblock title %}
+		
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -14,18 +14,14 @@
 		<link rel="stylesheet" href="{% static 'fontawesomefree/css/all.min.css' %}">
 		{% comment %} <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"> {% endcomment %}
 		<link rel="stylesheet" href="{% static 'css/toastify.min.css' %}">
-		{% comment %} <link rel="stylesheet" href="https://unpkg.com/accordion-js@3.3.2/dist/accordion.min.css"> {% endcomment %}
-		<link rel="stylesheet" href="{% static 'css/accordion.min.css' %}">
-		<link rel="stylesheet" href="{% static 'css/hystmodal.min.css' %}">
 		<link rel="stylesheet" href="{% static 'css/base.css' %}">
 
 		<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
 		{% comment %} <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script> {% endcomment %}
 		<script src="{% static 'js/toastify-js.js' %}"></script>
-		{% comment %} <script src="https://unpkg.com/accordion-js@3.3.2/dist/accordion.min.js"></script> {% endcomment %}
-		<script src="{% static 'js/accordion.min.js' %}"></script>
-		<script src="{% static 'js/hystmodal.min.js' %}"></script>
 		<script src="{% static 'js/jquery.blockUI.js' %}"></script>
+		{% block extra_assets %}
+		{% endblock extra_assets %}
 	</head>
 
 	<body class="bg-gray-50 font-mono">
@@ -40,7 +36,9 @@
 						<a href="#faq" class="text-teal-500 sm:hover:text-[2.1rem]">FAQ</a>
 					</li>
 					<li>
-						<a href="#" class="text-teal-500 sm:hover:text-[2.1rem]">My URLs</a>
+						<a href="{% url 'shorten:my-urls' %}" class="text-teal-500 sm:hover:text-[2.1rem]">
+							My URLs
+						</a>
 					</li>
 					<li>
 						<a href="#" class="border border-solid p-3 rounded-full text-red-400 hover:border-gray-400">
@@ -59,15 +57,26 @@
 		<footer class="pt-8 pb-4 border-solid border-t-2 bg-teal-500 text-xl text-white">
 			<ul class="flex gap-14 lg:gap-28 justify-center mb-5 sm:max-h-[28px]">
 				{# text-right is used to send text to right when it spans two lines #}
-				<li class="text-right"><a href="#" class="sm:hover:text-2xl">Send email</a></li>
-				<li><a href="#" class="sm:hover:text-2xl">GitHub</a></li>
-				<li><a href="#" class="sm:hover:text-2xl">Cup of coffee</a></li>
+				<li class="text-right">
+					<a href="mailto:sergedurand205@gmail.com?subject=From tinyy&message=Hi serge, " class="sm:hover:text-2xl">
+						Send email
+					</a>
+				</li>
+				<li>
+					<a href="https://github.com/Sergecodes/url-shortener" class="sm:hover:text-2xl">
+						GitHub
+					</a>
+				</li>
+				<li>
+					<a href="#" class="sm:hover:text-2xl">
+						Cup of coffee
+					</a>
+				</li>
 			</ul>
 			<p class="text-center">&copy; {% now 'Y' %}</p>
 		</footer>
 		{% endblock %}
 
-		<script src="{% static 'js/base.js' %}"></script>
 		<script>
 			$(function() {
 				$(document).ajaxError(function(event, jqXHR, settings, thrownError) {
@@ -106,6 +115,29 @@
 					}).showToast();
 				});
 			});
+
+			function copyLink() {
+				navigator.clipboard.writeText(this.dataset.text).then(function() {
+					Toastify({
+						text: "Link copied to clipboard.",
+						duration: 3000,
+						style: {
+							cursor: 'default',
+						}
+					}).showToast();
+				}, function() {
+					var errMsg = "An error occured while copying the link. <br> Try to copy it manually by selecting the text and copying.";
+					Toastify({
+						text: errMsg,
+						duration: 3500,
+						escapeMarkup: false,
+						style: {
+							cursor: 'default',
+							background: 'linear-gradient(to right, #8e0e00, #1f1c18)'
+						}
+					}).showToast();
+				});
+			}
 
 			{% comment %} $(document).ajaxStart(function() {
 				// console.log("ajax started");

@@ -1,4 +1,6 @@
 import uuid
+from django.conf import settings
+from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import F
 from django.http import JsonResponse
@@ -9,11 +11,12 @@ from .forms import URLForm
 from .models import URL, Browser, ShortURL, Visit
 from .utils import get_browser_dict, get_ip
 
+RESULTS_PER_PAGE = settings.RESULTS_PER_PAGE
+
 
 @require_POST
 def shorten_url(request):
 	"""This view handles shorten url request"""
-	print(request.POST)
 	form = URLForm(request.POST)
 
 	if form.is_valid():
@@ -66,13 +69,28 @@ def preview_hash(request, hash):
 	template = 'shorten/preview.html'
 	short_url = get_object_or_404(ShortURL, hash=hash)
 	context = {'hash': hash, 'long_url': short_url.long_url.url}
-	
 	return render(request, template, context)
 
 
-def my_links(request):
-	template = 'shorten/my_links.html'
-	context = {}
+def my_urls(request):
+	template = 'shorten/my_urls.html'
+	if browser_uuid := request.session.get('browser_uuid'):
+		result = ShortURL.objects.filter(browser__uuid=browser_uuid).order_by('-created_on')
+	else:
+		result = ShortURL.objects.none()
+
+	## paginate results
+	paginator = Paginator(result, RESULTS_PER_PAGE)
+	page_number = request.GET.get('page')
+	# if page_number is None, the first page is returned
+	page_obj = paginator.get_page(page_number) 
+	
+	context = {
+		'page_obj': page_obj,
+		# if more than one page is present, then the results are paginated
+		'is_paginated': paginator.num_pages > 1
+	}
+
 	return render(request, template, context)
 
 
@@ -81,9 +99,9 @@ def toggle_preview(request):
 	ok = request.POST.get('ok', False)
 
 	if ok:
-		request.session['PREVIEW_HASH'] = '1'
+		request.session['preview_hash'] = '1'
 	else:
-		request.session.pop('PREVIEW_HASH', None)
+		request.session.pop('preview_hash', None)
 
 	return JsonResponse({'new_ok': ok})
 

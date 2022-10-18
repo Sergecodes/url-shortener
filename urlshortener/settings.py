@@ -27,6 +27,7 @@ DEV_REDIS_URL = config('DEV_REDIS_URL')
 BASE_URL = config('BASE_URL')
 DEFAULT_HASH_LENGTH = config('DEFAULT_HASH_LENGTH', default=6, cast=int)
 USE_CAPTCHA = config('USE_CAPTCHA', default=True, cast=bool)
+RESULTS_PER_PAGE = config('RESULTS_PER_PAGE', default=10, cast=int)
 
 AUTH_USER_MODEL = 'users.User'
 
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+	'django.contrib.humanize',  # Added
 
 	## Third-party apps
 	'django_extensions',
@@ -47,6 +49,7 @@ INSTALLED_APPS = [
 	'tailwind',
 	'fontawesomefree',
 	'django_user_agents',
+	'qr_code',
 
 	## My apps
 	'users',

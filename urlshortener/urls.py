@@ -8,6 +8,7 @@ urlpatterns = [
     path('__reload__/', include("django_browser_reload.urls")),
     path('admin/', admin.site.urls),
     path('captcha/', include('captcha.urls')),
+    path('qr_code/', include('qr_code.urls', namespace='qr_code')),
 	# path('users/', include('users.urls', namespace='users')),
 ]
 
