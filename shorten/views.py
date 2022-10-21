@@ -11,6 +11,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
 
+from .constants import BROWSERS
 from .forms import URLForm
 from .models import URL, Browser, ShortURL, Visit
 from .utils import get_browser_dict, get_ip
@@ -120,8 +121,8 @@ def stats(request, hash):
 
 	for date_str, date in visits_per_month.items():
 		visits_per_month[date_str] = visits.filter(
-			visit__date__month=date.month, 
-			visit__date__year=date.year
+			date__month=date.month, 
+			date__year=date.year
 		).count()
 
 	context['past_num_months'] = abs(past_num_months)
@@ -132,20 +133,20 @@ def stats(request, hash):
 		.order_by('browser_name') \
 		.values('browser_name') \
 		.annotate(count=Count('browser_name'))
-	visits_per_browser = {v['browser_name']: v['count'] for v in visits}
+	visits_per_browser = {dict(BROWSERS)[v['browser_name']]: v['count'] for v in visits}
 
 	context['visits_per_browser'] = visits_per_browser
 
 	## Visits per past n days
 	past_num_days = -15
-	start_date, end_date = (today + dt.timedelta(days=past_num_days)).replace(day=1), today
+	start_date, end_date = today + dt.timedelta(days=past_num_days), today
 
 	dates = pd.date_range(start_date, end_date, freq='D').to_pydatetime().tolist() 
 	visits_per_day = {date.strftime('%b %d'): date for date in dates}
 	visits = all_visits.filter(date__range=[start_date, end_date])
 
 	for date_str, date in visits_per_day.items():
-		visits_per_day[date_str] = visits.filter(visit__date__date=date).count()
+		visits_per_day[date_str] = visits.filter(date__date=date).count()
 
 	context['past_num_days'] = abs(past_num_days)
 	context['visits_per_day'] = visits_per_day

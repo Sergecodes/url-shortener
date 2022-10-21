@@ -26,14 +26,20 @@
 
 	<body class="bg-gray-50 font-mono">
 		{% block header %}
+		{% url 'home:home' as home_url %}
 		<header class="shadow py-4 text-lg sm:px-8 sm:text-xl lg:px-28">
-			<a class="text-3xl text-transparent block mb-6 text-center md:inline hover:text-[2.2rem] header__title" href="#">
+			<a class="text-3xl text-transparent block mb-6 text-center md:inline hover:text-[2.2rem] header__title" href="{{ home_url }}">
 				TINYY.<sub>ink</sub>
 			</a>
 			<nav class="float-none md:float-right sm:max-h-[28px]">
 				<ul class="flex gap-7 sm:gap-10 justify-center">
 					<li>
-						<a href="#faq" class="text-teal-500 sm:hover:text-[2.1rem]">FAQ</a>
+						<a 
+							href="{% if request.get_full_path == home_url %}#faq{% else %}{{ home_url }}#faq{% endif %}" 
+							class="text-teal-500 sm:hover:text-[2.1rem]"
+						>
+							FAQ
+						</a>
 					</li>
 					<li>
 						<a href="{% url 'shorten:my-urls' %}" class="text-teal-500 sm:hover:text-[2.1rem]">
@@ -78,6 +84,8 @@
 		{% endblock %}
 
 		<script>
+
+			console.log("{{ request.get_full_path }}");
 			$(function() {
 				$(document).ajaxError(function(event, jqXHR, settings, thrownError) {
 					console.log(jqXHR);

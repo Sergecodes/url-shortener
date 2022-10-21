@@ -1,5 +1,7 @@
 {% extends "theme/base.html" %}
 
+{% load static %}
+
 {% block title %}
 <title>URL Shortener - Tinyy</title>
 {% endblock title %}
@@ -48,8 +50,8 @@
                <p class="ac-text">
                   A URL shortener is basically a tool that converts a long url to a short one. 
                   Generally, shorter URLs are more trustworthy. 
-                  For instance, you know those very long Facebook links right? Yes; tools like 
-                  URL shorteners can convert them to shorter and sexier links.
+                  For instance, you know those very long Facebook links right? Yes; 
+                  URL shorteners convert them to shorter and sexier links.
                </p>
             </div>
          </div>
@@ -119,6 +121,25 @@
                   Uhm, same reason you contact other people? <br>
                   Or you're like me and you don't contact people? 😁 <br><br>
                   Btw, i'm interested in job offers; <a href="#">check me out</a>.
+               </p>
+            </div>
+         </div>
+         <div class="ac">
+            <h2 class="ac-header">
+               <button type="button" class="ac-trigger">
+                  Disclaimer 👀
+               </button>
+            </h2>
+            <div class="ac-panel">
+               <p class="ac-text">
+                  Since you do not need to create an account before using this site,
+                  the URLs are stored on your browser in cookies. 
+                  So if you clear this site's cookies, you won't be able to see your URLs.
+                  Moreover, your links are available for 3 years, after which you won't
+                  be able to see them.<br><br>
+                  If you really need authentication support, comment/vote 
+                  <a class="text-teal-600" href="https://www.github.com/Sergecodes/url-shortener/issues/1">this issue</a>
+                  on GitHub.
                </p>
             </div>
          </div>

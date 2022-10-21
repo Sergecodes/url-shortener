@@ -1,0 +1,221 @@
+{% extends "theme/base.html" %}
+
+{% load static %}
+
+{% block title %}
+<title>{{ short_url.url }} | Stats</title>
+{% endblock title %}
+
+{% block extra_assets %}
+{% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js" integrity="sha512-ElRFoEQdI5Ht6kZvyzXhYG9NqjtkmlkfYk0wr6wHxU9JEHakS7UJZNeml5ALk+8IKlU6jDgMabC3vkumRokgJA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> {% endcomment %}
+<script src="{% static 'js/chart.min.js' %}"></script>
+{% endblock %}
+
+
+{% block content %}
+<div class="container mt-[5vh] mx-auto">
+   <section class="shadow p-8 mb-20">
+      <h1 class="text-3xl text-center text-gray-600">
+         Stats 
+      </h2>
+      <p class="text-sm text-gray-600 text-center mb-10">
+         (URL: {{ short_url.url }}, Total visits: {{ short_url.num_visits }})
+      </p>
+      <div class="grid mx-auto gap-y-10 gap-x-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+         <div><canvas id="visitsPerMonth" height="300"></canvas></div>
+         <div><canvas id="visitsPerDay" height="300"></canvas></div>
+         <div><canvas id="visitsPerCountry" height="300"></canvas></div>
+         <div><canvas id="visitsPerCity" height="300"></canvas></div>
+         <div class="md:col-span-2 lg:col-span-1 md:mx-auto lg:mx-0">
+            <canvas id="visitsPerBrowser" width="350" height="350"></canvas>
+         </div>
+      </div>
+   </section>
+</div>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+   var pastNumDays = {{ past_num_days }}, pastNumMonths = {{ past_num_months }};
+   var visitsPerDay = {{ visits_per_day|safe }};  // prevent escaping of json content(dict)
+   var visitsPerMonth = {{ visits_per_month|safe }};
+   var visitsPerCity = {{ visits_per_city|safe }};
+   var visitsPerCountry = {{ visits_per_country|safe }};
+   var visitsPerBrowser = {{ visits_per_browser|safe }};
+
+   var data, config;
+
+   /* Visits per month */
+   data = {
+      labels: Object.keys(visitsPerMonth),
+      datasets: [{
+         label: '# of visits',
+         data: Object.values(visitsPerMonth),
+         // Doesn't matter if it doesn't match the number of elements in this case lol
+         backgroundColor: [
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+            'rgba(75, 192, 192, 0.2)',
+            'rgba(153, 102, 255, 0.2)',
+            'rgba(255, 159, 64, 0.2)',
+            'rgba(255, 99, 132, 0.2)',
+            'rgba(54, 162, 235, 0.2)',
+            'rgba(255, 206, 86, 0.2)',
+         ],
+         borderColor: [
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+            'rgba(75, 192, 192, 1)',
+            'rgba(153, 102, 255, 1)',
+            'rgba(255, 159, 64, 1)',
+            'rgba(255, 99, 132, 1)',
+            'rgba(54, 162, 235, 1)',
+            'rgba(255, 206, 86, 1)',
+         ],
+         borderWidth: 1
+      }]
+   };
+   config = {
+      type: 'bar',
+      data: data,
+      options: {
+         responsive: true,
+         plugins: {
+            legend: {
+               position: 'top',
+            },
+            title: {
+               display: true,
+               text: `Number of visits since ${pastNumMonths} months`
+            }
+        }
+      },
+   };
+   new Chart(document.getElementById('visitsPerMonth'), config);
+
+   /* Visits per day */
+   data = {
+      labels: Object.keys(visitsPerDay),
+      datasets: [{
+         label: '# of visits',
+         data: Object.values(visitsPerDay),
+         fill: true,
+         borderColor: 'rgb(50, 220, 200)',
+         tension: 0.1
+      }]
+   };
+   config = {
+      type: 'line',
+      data: data,
+      options: {
+         responsive: true,
+         plugins: {
+            legend: {
+               position: 'top',
+            },
+            title: {
+               display: true,
+               text: `Number of visits since ${pastNumDays} days`
+            }
+        }
+      },
+   };
+   new Chart(document.getElementById('visitsPerDay'), config);
+
+   /* Visits per country */
+   data = {
+      labels: Object.keys(visitsPerCountry),
+      datasets: [{
+         label: '# of visits',
+         data: Object.values(visitsPerCountry),
+         backgroundColor: [
+            'rgba(132, 99, 255, 0.9)',
+         ],
+      }]
+   };
+   config = {
+      type: 'pie',
+      data: data,
+      options: {
+         responsive: true,
+         plugins: {
+            legend: {
+               position: 'top',
+            },
+            title: {
+               display: true,
+               text: `Number of visits per country`
+            }
+        }
+      },
+   };
+   new Chart(document.getElementById('visitsPerCountry'), config);
+
+   /* Visits per city */
+   data = {
+      labels: Object.keys(visitsPerCity),
+      datasets: [{
+         label: '# of visits',
+         data: Object.values(visitsPerCity),
+         backgroundColor: [
+            'rgba(99, 255, 132, 0.9)',
+         ],
+      }]
+   };
+   config = {
+      type: 'bar',
+      data: data,
+      options: {
+         responsive: true,
+         plugins: {
+            legend: {
+               position: 'top',
+            },
+            title: {
+               display: true,
+               text: `Number of visits per city`
+            }
+         },
+        indexAxis: 'y',
+        elements: {
+         bar: {
+            borderWidth: 2
+         }
+        }
+      },
+   };
+   new Chart(document.getElementById('visitsPerCity'), config);
+
+   /* Visits per browser */
+   data = {
+      labels: Object.keys(visitsPerBrowser),
+      datasets: [{
+         label: '# of visits',
+         data: Object.values(visitsPerBrowser),
+         backgroundColor: [
+            'rgba(251, 191, 36, 0.9)',
+         ],
+      }]
+   };
+   config = {
+      type: 'doughnut',
+      data: data,
+      options: {
+         responsive: true,
+         plugins: {
+            legend: {
+               position: 'top',
+            },
+            title: {
+               display: true,
+               text: `Number of visits per browser`
+            }
+        }
+      },
+   };
+   new Chart(document.getElementById('visitsPerBrowser'), config);
+</script>
+{% endblock %}
