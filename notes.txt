@@ -1,25 +1,23 @@
 source /home/sergeman/.virtualenvs/urlshortener-env/bin/activate 
 
 
-- use whitenoise, possibly with a cdn like cloudfront
-- use django hosts (eg for admin section)
-- use cache mechanism, eg. redis; 
-   - save both in db and cache, when retrieving, first try in cache. if not found, then check db.
--
-
 whitenoise==
 django-debug-toolbar==
-crispy-bootstrap5==
 
 
 TODO:
    BACKEND:
-      -
-      -
+      - link django hosts and enable admin. ...
+      - include redis in implementation(save both in db and cache, when retrieving, first check in cache. if not found, then check db.) create util functions...
+      - use whitenoise with cloudfront
+      - write tests
    
    FRONTEND:
-      - 
-      -
+      - work on stats page
+      - content of result modal (index page)
+      - work on preview page
+      - work on 404, 403, 500 pages
+
 
 TO INSTALL:
 - install nodejs

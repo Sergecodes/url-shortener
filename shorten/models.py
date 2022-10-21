@@ -116,5 +116,5 @@ class Visit(models.Model):
       super().save(*args, **kwargs)
 
    def __str__(self):
-      return f'{self.get_browser_display()}, {self.ip_address}'
+      return f'{self.get_browser_name_display()}, {self.ip_address}'
 
