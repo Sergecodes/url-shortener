@@ -1,6 +1,6 @@
 {% extends "theme/base.html" %}
 
-{% load static %}
+{% load static humanize qr_code app_extras %}
 
 {% block title %}
 <title>URL Shortener - Tinyy</title>
@@ -153,7 +153,72 @@
          <div class="hystmodal__window" role="dialog" aria-modal="true">
             <button data-hystclose class="hystmodal__close" aria-label="Close">
             </button>
-            <p class="py-auto">This is the modal content</p>
+            
+            {% comment %} {% with long_url=short_url.long_url url=short_url.url %}
+            {% qr_url_from_text url size='T' version=2 image_format='png' as qr_url %}
+            <div class="flex pt-6 mx-auto px-2">
+               <span>
+                  <i class="fa fa-link" aria-hidden="true"></i>
+               </span>
+               <div class="ml-2 md:mr-3 break-all"> {# break-all to account for super long urls #}
+                  <p class="flex justify-between">
+                     <span class="font-bold break-normal">{{ url }}</span>
+                     <span class="text-gray-400 text-xs ml-8 md:ml-[1.2rem]" title="{{ short_url.created_on }}">
+                        {{ short_url.created_on|naturaltime }} 
+                     </span>
+                  </p>
+                  <p class="mb-1">
+                     <span class="text-teal-700">{{ long_url.url }}</span>
+                  </p>
+                  <p class="mb-7">
+                     <span class="text-teal-700 mr-1">{{ short_url.num_visits|format_number }} visit{{ short_url.num_visits|pluralize }}</span>
+                     <a href="{% url 'shorten:stats' short_url.hash %}">
+                        <i class="fa fa-bar-chart" aria-hidden="true"></i>
+                        View stats
+                     </a>
+                  </p>
+                  <p class="mb-2">
+                     <a href="{{ url }}" target="_blank" class="mr-5">
+                        <i class="fa fa-external-link"></i> Visit 
+                     </a>
+                     <button class="clickBtn mr-5" data-text="{{ url }}" type="button">
+                        <i class="fa fa-copy" aria-hidden="true"></i> Copy
+                     </button>
+                     <a href="{{ qr_url }}" download="{{ url }}.png">
+                        <img 
+                           class="inline w-6"
+                           src="{{ qr_url }}" 
+                           alt="QR code"
+                        />
+                        Download QR
+                     </a>
+                  </p>
+                  <p>
+                     Share:  
+                     <a href="https://www.facebook.com/sharer/sharer.php?u={{ url }}" title="Share to Facebook" target="_blank" class="fa-stack fa-xl text-[cornflowerblue]">
+                        <span class="sr-only">Facebook share</span>
+                        <i class="fas fa-circle-thin fa-stack-2x" aria-hidden="true"></i>
+                        <i class="fab fa-facebook fa-stack-1x" aria-hidden="true"></i>
+                     </a>
+                     <a href="https://www.twitter.com/intent/tweet?text={{ url }}" title="Share to Twitter" target="_blank" class="fa-stack fa-xl text-[dodgerblue]">
+                        <span class="sr-only">Twitter share</span>
+                        <i class="fas fa-circle-thin fa-stack-2x" aria-hidden="true"></i>
+                        <i class="fab fa-twitter fa-stack-1x" aria-hidden="true"></i>
+                     </a>
+                     <a href="https://wa.me?text={{ url }}" title="Share to WhatsApp" target="_blank" class="fa-stack fa-xl text-[forestgreen]">
+                        <span class="sr-only">WhatsApp share</span>
+                        <i class="fas fa-circle-thin fa-stack-2x" aria-hidden="true"></i>
+                        <i class="fab fa-whatsapp fa-stack-1x" aria-hidden="true"></i>
+                     </a>
+                     <a href="mailto:''?body={{ url }}" title="Share to Mail" target="_blank" class="fa-stack fa-xl text-[#ff3333]">
+                        <span class="sr-only">Mail share</span>
+                        <i class="fas fa-circle-thin fa-stack-2x" aria-hidden="true"></i>
+                        <i class="fa fa-envelope fa-stack-1x" aria-hidden="true"></i>
+                     </a>
+                  </p>
+               </div>
+            </div>
+            {% endwith %} {% endcomment %}
          </div>
       </div>
    </div>
@@ -224,7 +289,9 @@
             xhr.setRequestHeader("X-CSRFToken", csrfToken);
          },
          success: function(result, status, jqXHR) {
+            // TODO update modal content from result
             console.log(result);
+            
             // Get new captcha(the previous captcha will be invalid)
             reloadIcon.click();
 

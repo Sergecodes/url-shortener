@@ -30,7 +30,7 @@
       </h2>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-y text-[0.9rem]">
          {% for short_url in page_obj %}
-         {% with long_url=short_url.long_url url=short_url.url %}
+         {% with long_url=short_url.long_url hash=short_url.hash url=short_url.url %}
          {% qr_url_from_text url size='T' version=2 image_format='png' as qr_url %}
          <div class="flex pt-6 mx-auto px-2 {% if forloop.counter == 2 %}md:border-none{% endif %} {% if forloop.counter == 3 %}lg:border-none{% endif %}">
             <span>
@@ -48,13 +48,13 @@
                </p>
                <p class="mb-7">
                   <span class="text-teal-700 mr-1">{{ short_url.num_visits|format_number }} visit{{ short_url.num_visits|pluralize }}</span>
-                  <a href="{% url 'shorten:stats' short_url.hash %}">
+                  <a href="{% url 'shorten:stats' hash %}">
                      <i class="fa fa-bar-chart" aria-hidden="true"></i>
                      View stats
                   </a>
                </p>
                <p class="mb-2">
-                  <a href="{{ url }}" target="_blank" class="mr-5">
+                  <a href="{% url 'shorten:redirect-url' hash %}" target="_blank" class="mr-5">
                      <i class="fa fa-external-link"></i> Visit 
                   </a>
                   <button class="clickBtn mr-5" data-text="{{ url }}" type="button">

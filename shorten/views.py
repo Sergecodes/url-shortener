@@ -42,6 +42,9 @@ def shorten_url(request):
 				)
 				long_url, __ = URL.objects.get_or_create(url=url)
 				short_url, __ = ShortURL.objects.get_or_create(long_url=long_url, browser=browser)
+				
+				# TODO: Update response to include captcha & short_url dict
+
 				return JsonResponse({'hash': short_url.hash}, status=201)
 		else:
 			# Hash has already been used
@@ -65,7 +68,7 @@ def redirect_url(request, hash):
 
 	# If previewing is available, redirect to preview page. else redirect to long url page
 	if request.session.get('preview_urls'):
-		return redirect('shorten:preview-url', {'hash': hash})
+		return redirect('shorten:preview-url', hash=hash)
 
 	return redirect(short_url.long_url.url)
 
@@ -117,8 +120,9 @@ def stats(request, hash):
 
 	dates = pd.date_range(start_date, end_date, freq='MS').to_pydatetime().tolist() # MS = month-start
 	visits_per_month = {date.strftime('%b-%Y'): date for date in dates}
-	visits = all_visits.filter(date__range=[start_date, end_date])
+	visits = all_visits.filter(date__date__range=[start_date, end_date])
 
+	print(all_visits.count(), short_url.num_visits)
 	for date_str, date in visits_per_month.items():
 		visits_per_month[date_str] = visits.filter(
 			date__month=date.month, 
@@ -128,6 +132,20 @@ def stats(request, hash):
 	context['past_num_months'] = abs(past_num_months)
 	context['visits_per_month'] = visits_per_month
 
+	## Visits per past n days
+	past_num_days = -15
+	start_date, end_date = today + dt.timedelta(days=past_num_days), today
+
+	dates = pd.date_range(start_date, end_date, freq='D').to_pydatetime().tolist() 
+	visits_per_day = {date.strftime('%b %d'): date for date in dates}
+	visits = all_visits.filter(date__date__range=[start_date, end_date])
+
+	for date_str, date in visits_per_day.items():
+		visits_per_day[date_str] = visits.filter(date__date=date).count()
+
+	context['past_num_days'] = abs(past_num_days)
+	context['visits_per_day'] = visits_per_day
+
 	## Visits per browser
 	visits = all_visits \
 		.order_by('browser_name') \
@@ -136,20 +154,6 @@ def stats(request, hash):
 	visits_per_browser = {dict(BROWSERS)[v['browser_name']]: v['count'] for v in visits}
 
 	context['visits_per_browser'] = visits_per_browser
-
-	## Visits per past n days
-	past_num_days = -15
-	start_date, end_date = today + dt.timedelta(days=past_num_days), today
-
-	dates = pd.date_range(start_date, end_date, freq='D').to_pydatetime().tolist() 
-	visits_per_day = {date.strftime('%b %d'): date for date in dates}
-	visits = all_visits.filter(date__range=[start_date, end_date])
-
-	for date_str, date in visits_per_day.items():
-		visits_per_day[date_str] = visits.filter(date__date=date).count()
-
-	context['past_num_days'] = abs(past_num_days)
-	context['visits_per_day'] = visits_per_day
 
 	## Visits per city & country
 	visits_per_city, visits_per_country = {}, {}

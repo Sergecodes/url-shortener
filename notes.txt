@@ -14,9 +14,9 @@ TODO:
    
    FRONTEND:
       - content of result modal (index page)
-      - work on preview page
       - cookie disclaimer
       - work on 404, 403, 500 pages
+      - fix support link (buy me a coffee...)
 
 
 TO INSTALL:

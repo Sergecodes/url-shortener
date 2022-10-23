@@ -1,0 +1,22 @@
+{% extends "theme/base.html" %}
+
+
+{% block title %}
+<title>URL Preview</title>
+{% endblock title %}
+
+
+{% block content %}
+<div class="container mt-[10vh] mx-auto">
+   <section class="h-[70vh] text-center shadow-sm p-4">
+      {% with long_url=short_url.long_url %}
+      <p class="mb-4">URL: {{ short_url.url }}</p>
+      <p class="mb-8 break-words">Long URL: {{ long_url.url }}</p>
+      <a href="{{ long_url.url }}" class="text-teal-600 hover:underline">
+         Go <i class="fa fa-arrow-right" aria-hidden="true"></i>
+      </a>
+      {% endwith %}
+   </section>
+</div>
+{% endblock %}
+

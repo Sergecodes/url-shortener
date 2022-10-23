@@ -84,44 +84,40 @@
 		{% endblock %}
 
 		<script>
+			$(document).ajaxError(function(event, jqXHR, settings, thrownError) {
+				console.log(jqXHR);
+				console.log(settings);
 
-			console.log("{{ request.get_full_path }}");
-			$(function() {
-				$(document).ajaxError(function(event, jqXHR, settings, thrownError) {
-					console.log(jqXHR);
-					console.log(settings);
+				var defaultMsg = (function() {
+					var main = "An error occured, refresh the page and try again. <br> <a href='mailto:sergedurand205@gmail.com' style='text-decoration: underline;'>Contact us</a> if it persists.";
+					var responseStr = jqXHR.responseJSON.data;
 
-					var defaultMsg = (function() {
-						var main = "An error occured, refresh the page and try again. <br> <a href='mailto:sergedurand205@gmail.com' style='text-decoration: underline;'>Contact us</a> if it persists.";
-						var responseStr = jqXHR.responseJSON.data;
-
-						if (responseStr) {
-							// If we're on home page and captcha was not invalid,
-							// we need to refresh captcha (else captcha check won't validate).
-							if (
-								(typeof captchaInput !== 'undefined') && 
-								!('captcha' in JSON.parse(responseStr))
-							) {
-								reloadIcon.click();
-							}
-							return responseStr;
-						} else if (jqXHR.responseJSON.code == 'HASH_UNAVAILABLE') {
-							return 'Alias unavailable, please use another one or let us choose one for you.';
+					if (responseStr) {
+						// If we're on home page and captcha was not invalid,
+						// we need to refresh captcha (else captcha check won't validate).
+						if (
+							(typeof captchaInput !== 'undefined') && 
+							!('captcha' in JSON.parse(responseStr))
+						) {
+							reloadIcon.click();
 						}
+						return responseStr;
+					} else if (jqXHR.responseJSON.code == 'HASH_UNAVAILABLE') {
+						return 'Alias unavailable, please use another one or let us choose one for you.';
+					}
 
-						return main;
-					})();
+					return main;
+				})();
 
-					Toastify({
-						text: defaultMsg,
-						duration: 3500,
-						escapeMarkup: false,
-						style: {
-							cursor: 'default',
-							background: 'linear-gradient(to right, #8e0e00, #1f1c18)'
-						}
-					}).showToast();
-				});
+				Toastify({
+					text: defaultMsg,
+					duration: 3500,
+					escapeMarkup: false,
+					style: {
+						cursor: 'default',
+						background: 'linear-gradient(to right, #8e0e00, #1f1c18)'
+					}
+				}).showToast();
 			});
 
 			function copyLink() {
@@ -168,6 +164,27 @@
 				// console.log("ajax ok");
 				$.unblockUI();
 			}); {% endcomment %}
+
+			// Display cookie consent
+			if (!localStorage.getItem('cookieConsentShown')) {
+				var msg = "Cookies are used to optimize experience.";
+				Toastify({
+					text: msg,
+					duration: 3000,
+					close: true,
+					gravity: 'bottom',
+					position: 'right',
+					stopOnFocus: true,
+					destination: '#',
+					newWindow: true,
+					escapeMarkup: false,
+					style: {
+						color: '#aaa',
+						background: '#eee'
+					}
+				}).showToast();
+				localStorage.setItem('cookieConsentShown', 'true');
+			}
 		</script>
 		{% block extra_js %}
 		{% endblock %}
