@@ -158,6 +158,19 @@ def preview_url(request, hash):
 	return render(request, template, context)
 
 
+@require_POST
+def delete_url(request):
+	hash = request.POST.get('hash')
+	browser_uuid = request.session.get('browser_uuid')
+	short_url = get_object_or_404(ShortURL, hash=hash, browser__uuid=browser_uuid)
+	short_url.delete()
+
+	if next_url := request.POST.get('next'):
+		return redirect(next_url)
+
+	return redirect('shorten:my-urls')
+
+
 def my_urls(request):
 	template = 'shorten/my_urls.html'
 	if browser_uuid := request.session.get('browser_uuid'):
@@ -285,21 +298,4 @@ def toggle_preview(request):
 		request.session.pop('preview_urls', None)
 
 	return JsonResponse({'new_preview': preview})
-
-
-
-# In a view or a middleware where the `request` object is available
-
-#  from ipware import get_client_ip
-#  client_ip, is_routable = get_client_ip(request)
-#  if client_ip is None:
-#     # Unable to get the client's IP address
-#  else:
-#      # We got the client's IP address
-#      if is_routable:
-#          # The client's IP address is publicly routable on the Internet
-#      else:
-#          # The client's IP address is private
-
-#  # Order of precedence is (Public, Private, Loopback, None)
 
