@@ -12,7 +12,6 @@ TODO:
       - write tests
    
    FRONTEND:
-      - create favicon
       - fix support link (buy me a coffee...)
 
 
