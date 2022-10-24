@@ -3,6 +3,19 @@ from ipware import get_client_ip
 from .constants import BROWSERS
 
 
+def format_number(num):
+	num = float('{:.3g}'.format(num))
+	magnitude = 0
+	while abs(num) >= 1000:
+		magnitude += 1
+		num /= 1000.0
+
+	return '{}{}'.format(
+		'{:f}'.format(num).rstrip('0').rstrip('.'), 
+		['', 'K', 'M', 'B', 'T'][magnitude]
+	)
+	
+
 def get_browser_dict(request):
 	browsers_dict = dict(BROWSERS)
 

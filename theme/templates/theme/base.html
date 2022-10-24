@@ -121,6 +121,7 @@
 			});
 
 			function copyLink() {
+				console.log(this);
 				navigator.clipboard.writeText(this.dataset.text).then(function() {
 					Toastify({
 						text: "Link copied to clipboard.",
@@ -170,17 +171,16 @@
 				var msg = "Cookies are used to optimize experience.";
 				Toastify({
 					text: msg,
-					duration: 3000,
-					close: true,
+					duration: 4000,
 					gravity: 'bottom',
 					position: 'right',
 					stopOnFocus: true,
-					destination: '#',
+					destination: '#',  // TODO link to about cookies page
 					newWindow: true,
 					escapeMarkup: false,
 					style: {
-						color: '#aaa',
-						background: '#eee'
+						color: 'darkslategray',
+						background: '#14b8a6'
 					}
 				}).showToast();
 				localStorage.setItem('cookieConsentShown', 'true');

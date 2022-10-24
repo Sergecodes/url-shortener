@@ -1,0 +1,25 @@
+{% extends "core/base.html" %}
+
+{% block title %}
+<title>403 - Permission Denied</title>
+{% endblock %}
+
+{% block content %}
+<div class="container mt-[10vh] mx-auto">
+    <section class="h-[70vh] text-center shadow-sm p-4">
+       <h2>Permission Denied</h2>
+       <p>
+        {% if exception %}
+            {# convert \n received from view to br #}
+            <b class="whitespace-pre-line">{{ exception }}</b>
+        {% else %}
+            <b>You are not permitted to access this page.</b>
+        {% endif %} 
+        <br><br>
+        You can use the site's navigation links to explore the areas of this site that you can access.
+    </p>
+    </section>
+ </div>
+{% endblock content %}
+
+

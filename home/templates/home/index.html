@@ -154,63 +154,60 @@
             <button data-hystclose class="hystmodal__close" aria-label="Close">
             </button>
             
-            {% comment %} {% with long_url=short_url.long_url url=short_url.url %}
-            {% qr_url_from_text url size='T' version=2 image_format='png' as qr_url %}
+            {% comment %} {% qr_url_from_text url size='T' version=2 image_format='png' as qr_url %} {% endcomment %}
             <div class="flex pt-6 mx-auto px-2">
                <span>
                   <i class="fa fa-link" aria-hidden="true"></i>
                </span>
                <div class="ml-2 md:mr-3 break-all"> {# break-all to account for super long urls #}
                   <p class="flex justify-between">
-                     <span class="font-bold break-normal">{{ url }}</span>
-                     <span class="text-gray-400 text-xs ml-8 md:ml-[1.2rem]" title="{{ short_url.created_on }}">
-                        {{ short_url.created_on|naturaltime }} 
-                     </span>
+                     <span class="font-bold break-normal js-url"></span>
                   </p>
                   <p class="mb-1">
-                     <span class="text-teal-700">{{ long_url.url }}</span>
+                     <span class="text-teal-700 js-longUrl"></span>
                   </p>
                   <p class="mb-7">
-                     <span class="text-teal-700 mr-1">{{ short_url.num_visits|format_number }} visit{{ short_url.num_visits|pluralize }}</span>
-                     <a href="{% url 'shorten:stats' short_url.hash %}">
+                     <span class="text-teal-700 mr-1 js-numVisits"></span>
+                     <a href="{% url 'shorten:stats' '[[hash]]' %}" class="js-stats">
                         <i class="fa fa-bar-chart" aria-hidden="true"></i>
                         View stats
                      </a>
                   </p>
                   <p class="mb-2">
-                     <a href="{{ url }}" target="_blank" class="mr-5">
+                     <a href="" target="_blank" class="mr-5 js-url">
                         <i class="fa fa-external-link"></i> Visit 
                      </a>
-                     <button class="clickBtn mr-5" data-text="{{ url }}" type="button">
+                     <button class="clickBtn mr-5 js-url" onclick="copyLink.bind(this)();" data-text="" type="button">
                         <i class="fa fa-copy" aria-hidden="true"></i> Copy
                      </button>
-                     <a href="{{ qr_url }}" download="{{ url }}.png">
+                     <a href="" download="" class="js-qrUrl">
                         <img 
-                           class="inline w-6"
-                           src="{{ qr_url }}" 
+                           class="inline w-6 js-qrUrl"
+                           src="" 
                            alt="QR code"
                         />
                         Download QR
                      </a>
                   </p>
-                  <p>
+                  <p class="js-shareBlock">
                      Share:  
-                     <a href="https://www.facebook.com/sharer/sharer.php?u={{ url }}" title="Share to Facebook" target="_blank" class="fa-stack fa-xl text-[cornflowerblue]">
+                     {# [[url]] will be replaced with the url #}
+                     <a href="https://www.facebook.com/sharer/sharer.php?u=[[url]]" title="Share to Facebook" target="_blank" class="fa-stack fa-xl text-[cornflowerblue]">
                         <span class="sr-only">Facebook share</span>
                         <i class="fas fa-circle-thin fa-stack-2x" aria-hidden="true"></i>
                         <i class="fab fa-facebook fa-stack-1x" aria-hidden="true"></i>
                      </a>
-                     <a href="https://www.twitter.com/intent/tweet?text={{ url }}" title="Share to Twitter" target="_blank" class="fa-stack fa-xl text-[dodgerblue]">
+                     <a href="https://www.twitter.com/intent/tweet?text=[[url]]" title="Share to Twitter" target="_blank" class="fa-stack fa-xl text-[dodgerblue]">
                         <span class="sr-only">Twitter share</span>
                         <i class="fas fa-circle-thin fa-stack-2x" aria-hidden="true"></i>
                         <i class="fab fa-twitter fa-stack-1x" aria-hidden="true"></i>
                      </a>
-                     <a href="https://wa.me?text={{ url }}" title="Share to WhatsApp" target="_blank" class="fa-stack fa-xl text-[forestgreen]">
+                     <a href="https://wa.me?text=[[url]]" title="Share to WhatsApp" target="_blank" class="fa-stack fa-xl text-[forestgreen]">
                         <span class="sr-only">WhatsApp share</span>
                         <i class="fas fa-circle-thin fa-stack-2x" aria-hidden="true"></i>
                         <i class="fab fa-whatsapp fa-stack-1x" aria-hidden="true"></i>
                      </a>
-                     <a href="mailto:''?body={{ url }}" title="Share to Mail" target="_blank" class="fa-stack fa-xl text-[#ff3333]">
+                     <a href="mailto:''?body=[[url]]" title="Share to Mail" target="_blank" class="fa-stack fa-xl text-[#ff3333]">
                         <span class="sr-only">Mail share</span>
                         <i class="fas fa-circle-thin fa-stack-2x" aria-hidden="true"></i>
                         <i class="fa fa-envelope fa-stack-1x" aria-hidden="true"></i>
@@ -218,7 +215,6 @@
                   </p>
                </div>
             </div>
-            {% endwith %} {% endcomment %}
          </div>
       </div>
    </div>
@@ -289,8 +285,24 @@
             xhr.setRequestHeader("X-CSRFToken", csrfToken);
          },
          success: function(result, status, jqXHR) {
-            // TODO update modal content from result
+            // Update modal
             console.log(result);
+            var { url, long_url, qr_url, hash } = result;
+            var { num_visits, num_visits_ft } = result;
+
+            $('#resultModal span.js-url').text(url);
+            $('#resultModal span.js-longUrl').text(long_url.url);
+            $('#resultModal span.js-numVisits').text(`${num_visits_ft} visit${num_visits > 1 ? 's' : ''}`);
+            $('#resultModal a.js-stats').each(function (idx, ele) {
+               ele.href = ele.href.replace('[[hash]]', hash);
+            });
+            $('#resultModal a.js-url').attr({ href: url });
+            $('#resultModal button.js-url').attr({ 'data-text': url });
+            $('#resultModal a.js-qrUrl').attr({ href: qr_url, download: url + '.png' });
+            $('#resultModal img.js-qrUrl').attr({ src: qr_url });
+            $('#resultModal p.js-shareBlock > a').each(function(idx, ele) {
+               ele.href = ele.href.replace('[[url]]', url);
+            });
             
             // Get new captcha(the previous captcha will be invalid)
             reloadIcon.click();

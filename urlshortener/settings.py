@@ -20,6 +20,7 @@ DEV_DB_HOST = config('DEV_DB_HOST')
 DEV_DB_PORT = config('DEV_DB_PORT')
 
 # Redis
+USE_CACHE = config('USE_CACHE', default=False, cast=bool)
 USE_PROD_REDIS = config('USE_PROD_REDIS', default=False, cast=bool)
 DEV_REDIS_URL = config('DEV_REDIS_URL')
 
@@ -119,39 +120,40 @@ else:
 		}
 	}
 
+if USE_CACHE:
+	SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
-SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
-
-# Caching (https://github.com/jazzband/django-redis, 
-# https://docs.djangoproject.com/en/3.2/topics/cache/)
-if USE_PROD_REDIS:
-	pass
-else:
-	CACHES = {
-		'default': {
-			'BACKEND': 'django_redis.cache.RedisCache',
-			'LOCATION': DEV_REDIS_URL,
-			'OPTIONS': {
-				'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+	# Caching (https://github.com/jazzband/django-redis, 
+	# https://docs.djangoproject.com/en/3.2/topics/cache/)
+	if USE_PROD_REDIS:
+		pass
+	else:
+		CACHES = {
+			'default': {
+				'TIMEOUT': 43200,  # Default is 300(seconds)
+				'BACKEND': 'django_redis.cache.RedisCache',
+				'LOCATION': DEV_REDIS_URL,
+				'OPTIONS': {
+					'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+				}
 			}
 		}
-	}
 
-	# CACHES = {
-	# 	'default': {
-	# 		'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-	# 		'LOCATION': 'cache_table',
-	# 	}
-	# }
-	# python manage.py createcachetable --dry-run
+		# CACHES = {
+		# 	'default': {
+		# 		'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+		# 		'LOCATION': 'cache_table',
+		# 	}
+		# }
+		# python manage.py createcachetable --dry-run
 
-	# CACHES = {
-	# 	'default': {
-	# 		'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-	# 		'TIMEOUT': 300,  # The default(300s = 5mins)
-	# 		# 'TIMEOUT': 60 * 60 * 24,  # 86400(s)=24h
-	# 	}
-	# }
+		# CACHES = {
+		# 	'default': {
+		# 		'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+		# 		'TIMEOUT': 300,  # The default(300s = 5mins)
+		# 		# 'TIMEOUT': 60 * 60 * 24,  # 86400(s)=24h
+		# 	}
+		# }
 
 
 # Password validation

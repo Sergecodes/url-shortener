@@ -4,6 +4,8 @@ import uuid
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.gis.geoip2 import GeoIP2
+from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.db import transaction
 from django.db.models import F, Count
@@ -14,8 +16,9 @@ from django.views.decorators.http import require_POST
 from .constants import BROWSERS
 from .forms import URLForm
 from .models import URL, Browser, ShortURL, Visit
-from .utils import get_browser_dict, get_ip
+from .utils import get_browser_dict, get_ip, format_number
 
+USE_CACHE = settings.USE_CACHE
 RESULTS_PER_PAGE = settings.RESULTS_PER_PAGE
 
 
@@ -36,16 +39,59 @@ def shorten_url(request):
 				request.session['browser_uuid'] = browser_uuid
 
 			with transaction.atomic():
-				browser, __ = Browser.objects.get_or_create(
-					uuid=browser_uuid, 
-					defaults={'name': list(get_browser_dict(request))[0]}
-				)
-				long_url, __ = URL.objects.get_or_create(url=url)
-				short_url, __ = ShortURL.objects.get_or_create(long_url=long_url, browser=browser)
-				
-				# TODO: Update response to include captcha & short_url dict
+				if USE_CACHE:
+					# Cache keys
+					browser_key = f'browser_{browser_uuid}'
+					long_url_key = f'url_{url}'
+					short_url_key1 = f'short_url_url_{url}_browser_{browser_uuid}'
 
-				return JsonResponse({'hash': short_url.hash}, status=201)
+					if not (browser := cache.get(browser_key)):
+						browser, __ = Browser.objects.get_or_create(
+							uuid=browser_uuid, 
+							defaults={'name': list(get_browser_dict(request))[0]}
+						)
+						cache.set(browser_key, browser)
+
+					if not (long_url := cache.get(long_url_key)):
+						long_url, __ = URL.objects.get_or_create(url=url)
+						cache.set(long_url_key, long_url)
+
+					if not (short_url := cache.get(short_url_key1)):
+						short_url, __ = ShortURL.objects.get_or_create(
+							long_url=long_url, 
+							browser=browser,
+							defaults={'hash': desired_hash or ''}
+						)
+						cache.set(short_url_key1, short_url)
+
+						# Store short url in cache using hash
+						short_url_key2 = f'short_url_{short_url.hash}'
+						cache.set(short_url_key2, short_url)
+				else:
+					browser, __ = Browser.objects.get_or_create(
+						uuid=browser_uuid, 
+						defaults={'name': list(get_browser_dict(request))[0]}
+					)
+					long_url, __ = URL.objects.get_or_create(url=url)
+					short_url, __ = ShortURL.objects.get_or_create(
+						long_url=long_url, 
+						browser=browser,
+						defaults={'hash': desired_hash or ''}
+					)
+				
+				# TODO: Update response to include qrcode 
+				result = short_url.__dict__.copy()
+				result.pop('_state')
+				long_url_dict = short_url.long_url.__dict__.copy()
+				long_url_dict.pop('_state')
+				result.update({
+					'url': short_url.url,
+					'num_visits_ft': format_number(short_url.num_visits),
+					'long_url': long_url_dict,
+					'qr_url': ''
+				})
+				
+				return JsonResponse(result, status=201)
 		else:
 			# Hash has already been used
 			return JsonResponse({'code': 'HASH_UNAVAILABLE'}, status=409)
@@ -54,10 +100,21 @@ def shorten_url(request):
 
 
 def redirect_url(request, hash):
-	short_url = get_object_or_404(ShortURL, hash=hash)
+	if USE_CACHE:
+		# Use short_url_key2
+		key = f'short_url_{hash}'
+		if not (short_url := cache.get(key)):
+			short_url = get_object_or_404(ShortURL, hash=hash)
+
+			# Add in cache
+			short_url_key1 = f'short_url_url_{short_url.long_url.url}_browser_{short_url.browser.uuid}'
+			short_url_key2 = f'short_url_{hash}'
+			cache.set_many({short_url_key1: short_url, short_url_key2: short_url})
+	else:
+		short_url = get_object_or_404(ShortURL, hash=hash)
 
 	with transaction.atomic():
-		# Add visits
+		# Add visits & update cache
 		short_url.num_visits = F('num_visits') + 1
 		short_url.save(update_fields=['num_visits'])
 		Visit.objects.create(
@@ -65,6 +122,15 @@ def redirect_url(request, hash):
 			browser_name=list(get_browser_dict(request))[0], 
 			ip_address=get_ip(request)
 		)
+
+		if USE_CACHE:
+			## Update cache
+			# Do this so as to get numeric val of num_visits without doing a refresh_from_db()
+			# else it will be a "CombinedExpression" instance
+			short_url.num_visits += 1  
+			short_url_key1 = f'short_url_url_{short_url.long_url.url}_browser_{short_url.browser.uuid}'
+			short_url_key2 = f'short_url_{hash}'
+			cache.set_many({short_url_key1: short_url, short_url_key2: short_url})
 
 	# If previewing is available, redirect to preview page. else redirect to long url page
 	if request.session.get('preview_urls'):
@@ -74,8 +140,20 @@ def redirect_url(request, hash):
 
 
 def preview_url(request, hash):
+	if USE_CACHE:
+		# Use short_url_key2
+		key = f'short_url_{hash}'
+		if not (short_url := cache.get(key)):
+			short_url = get_object_or_404(ShortURL, hash=hash)
+
+			# Add in cache
+			short_url_key1 = f'short_url_url_{short_url.long_url.url}_browser_{short_url.browser.uuid}'
+			short_url_key2 = f'short_url_{hash}'
+			cache.set_many({short_url_key1: short_url, short_url_key2: short_url})
+	else:
+		short_url = get_object_or_404(ShortURL, hash=hash)
+
 	template = 'shorten/preview.html'
-	short_url = get_object_or_404(ShortURL, hash=hash)
 	context = {'short_url': short_url}
 	return render(request, template, context)
 
@@ -108,8 +186,20 @@ def stats(request, hash):
 	To get stats of number of visits of a url. 
 	It's considered that the frontend uses the library charts.js
 	""" 
+	if USE_CACHE:
+		# Use short_url_key2
+		key = f'short_url_{hash}'
+		if not (short_url := cache.get(key)):
+			short_url = get_object_or_404(ShortURL, hash=hash)
+
+			# Add in cache
+			short_url_key1 = f'short_url_url_{short_url.long_url.url}_browser_{short_url.browser.uuid}'
+			short_url_key2 = f'short_url_{hash}'
+			cache.set_many({short_url_key1: short_url, short_url_key2: short_url})
+	else:
+		short_url = get_object_or_404(ShortURL, hash=hash)
+
 	template = 'shorten/stats.html'
-	short_url = get_object_or_404(ShortURL, hash=hash)
 	all_visits = short_url.visits.all()
 	context = {'short_url': short_url}
 
@@ -122,7 +212,6 @@ def stats(request, hash):
 	visits_per_month = {date.strftime('%b-%Y'): date for date in dates}
 	visits = all_visits.filter(date__date__range=[start_date, end_date])
 
-	print(all_visits.count(), short_url.num_visits)
 	for date_str, date in visits_per_month.items():
 		visits_per_month[date_str] = visits.filter(
 			date__month=date.month, 

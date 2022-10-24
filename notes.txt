@@ -8,14 +8,12 @@ django-debug-toolbar==
 TODO:
    BACKEND:
       - link django hosts and enable admin. url ...
-      - include redis in implementation(save both in db and cache, when retrieving, first check in cache. if not found, then check db.) create util functions...
       - use whitenoise with cloudfront
       - write tests
    
    FRONTEND:
-      - content of result modal (index page)
-      - cookie disclaimer
-      - work on 404, 403, 500 pages
+      - add delete button
+      - create favicon
       - fix support link (buy me a coffee...)
 
 
