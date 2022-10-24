@@ -51,6 +51,7 @@ INSTALLED_APPS = [
 	'fontawesomefree',
 	'django_user_agents',
 	'qr_code',
+	'django_hosts',
 
 	## My apps
 	'users',
@@ -65,8 +66,8 @@ if DEBUG:
 
 
 MIDDLEWARE = [
+	'django_hosts.middleware.HostsRequestMiddleware',  # for django_hosts
 	'django.middleware.security.SecurityMiddleware',
-	# 'django_hosts.middleware.HostsRequestMiddleware',  # for django_hosts
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
@@ -74,7 +75,7 @@ MIDDLEWARE = [
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 	'django_user_agents.middleware.UserAgentMiddleware',
-	# 'django_hosts.middleware.HostsResponseMiddleware',  # for django_hosts
+	'django_hosts.middleware.HostsResponseMiddleware',  # for django_hosts
 ]
 
 if DEBUG:
@@ -87,7 +88,7 @@ ROOT_URLCONF = 'urlshortener.urls'
 TEMPLATES = [
 	{
 		'BACKEND': 'django.template.backends.django.DjangoTemplates',
-		'DIRS': [],
+		'DIRS': [BASE_DIR / 'templates', ],
 		'APP_DIRS': True,
 		'OPTIONS': {
 			'context_processors': [
@@ -209,3 +210,7 @@ GEOIP_PATH = BASE_DIR / 'geoip_db'
 TAILWIND_APP_NAME = 'theme'
 INTERNAL_IPS = ALLOWED_HOSTS
 
+
+# django-hosts
+ROOT_HOSTCONF = 'urlshortener.hosts'
+DEFAULT_HOST = 'www'

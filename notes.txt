@@ -7,7 +7,6 @@ django-debug-toolbar==
 
 TODO:
    BACKEND:
-      - link django hosts and enable admin. url ...
       - use whitenoise with cloudfront
       - write tests
    
