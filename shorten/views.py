@@ -12,6 +12,8 @@ from django.db.models import F, Count
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.decorators.http import require_POST
+from qr_code.qrcode.serve import make_qr_code_url
+from qr_code.qrcode.utils import QRCodeOptions
 
 from .constants import BROWSERS
 from .forms import URLForm
@@ -79,18 +81,19 @@ def shorten_url(request):
 						defaults={'hash': desired_hash or ''}
 					)
 				
-				# TODO: Update response to include qrcode 
 				result = short_url.__dict__.copy()
 				result.pop('_state')
 				long_url_dict = short_url.long_url.__dict__.copy()
 				long_url_dict.pop('_state')
+
+				qr_options = QRCodeOptions(size='T', version=2, image_format='png')
+
 				result.update({
 					'url': short_url.url,
 					'num_visits_ft': format_number(short_url.num_visits),
 					'long_url': long_url_dict,
-					'qr_url': ''
+					'qr_url': make_qr_code_url(short_url.url, qr_options)
 				})
-				
 				return JsonResponse(result, status=201)
 		else:
 			# Hash has already been used
