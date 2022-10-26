@@ -121,6 +121,9 @@ else:
 		}
 	}
 
+
+SESSION_COOKIE_AGE = 9.461*(10**7)  # 3yrs. (default is 1209600 - 2weeks)
+
 if USE_CACHE:
 	SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
@@ -214,3 +217,9 @@ INTERNAL_IPS = ALLOWED_HOSTS
 # django-hosts
 ROOT_HOSTCONF = 'urlshortener.hosts'
 DEFAULT_HOST = 'www'
+
+
+# django-qr-code
+if USE_CACHE:
+	QR_CODE_CACHE_ALIAS = 'default'
+

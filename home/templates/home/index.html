@@ -153,12 +153,8 @@
          <div class="hystmodal__window" role="dialog" aria-modal="true">
             <button data-hystclose class="hystmodal__close" aria-label="Close">
             </button>
-            
-            {% comment %} {% qr_url_from_text url size='T' version=2 image_format='png' as qr_url %} {% endcomment %}
             <div class="flex pt-6 mx-auto px-2">
-               <span>
-                  <i class="fa fa-link" aria-hidden="true"></i>
-               </span>
+               <span><i class="fa fa-link" aria-hidden="true"></i></span>
                <div class="ml-2 md:mr-3 break-all"> {# break-all to account for super long urls #}
                   <p class="flex justify-between">
                      <span class="font-bold break-normal js-url"></span>

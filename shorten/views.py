@@ -4,7 +4,6 @@ import uuid
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
 from django.contrib.gis.geoip2 import GeoIP2
-from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.core.cache import cache
 from django.core.paginator import Paginator
 from django.db import transaction
@@ -82,6 +81,8 @@ def shorten_url(request):
 					)
 				
 				result = short_url.__dict__.copy()
+				# Pop this key since it isn't needed and it will raise json error if it's left
+				# (since it can't be serialized)
 				result.pop('_state')
 				long_url_dict = short_url.long_url.__dict__.copy()
 				long_url_dict.pop('_state')
