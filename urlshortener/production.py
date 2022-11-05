@@ -1,4 +1,4 @@
-### Uses AZURE ###
+### Used by AZURE ###
 from .settings import *
 
 
@@ -31,9 +31,7 @@ MIDDLEWARE.insert(sec_middleware_idx + 1, 'whitenoise.middleware.WhiteNoiseMiddl
 # Static files config
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  
 
-
-# Configure Postgres database; the full username for PostgreSQL flexible server is
-# username (not @sever-name).
+# Configure Postgres database
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.postgresql',
