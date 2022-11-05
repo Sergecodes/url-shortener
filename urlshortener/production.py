@@ -26,7 +26,7 @@ except ValueError:
 
 # Add whitenoise directly after security middleware
 sec_middleware_idx = MIDDLEWARE.index('django.middleware.security.SecurityMiddleware')
-MIDDLEWARE.insert(sec_middleware_idx + 1, 'django.contrib.sessions.middleware.SessionMiddleware')
+MIDDLEWARE.insert(sec_middleware_idx + 1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 # Static files config
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  
@@ -38,7 +38,7 @@ DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.postgresql',
 		'NAME': DBNAME,
-		'HOST': hostname + ".postgres.database.azure.com",
+		'HOST': hostname + '.postgres.database.azure.com',
 		'USER': DBUSER,
 		'PASSWORD': DBPASS 
 	}
