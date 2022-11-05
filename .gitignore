@@ -24,7 +24,7 @@ media/
 *.pyc
 __pycache__/
 
-geoip_db
+# geoip_db
 
 
 # local env files

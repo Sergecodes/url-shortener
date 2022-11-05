@@ -1,4 +1,5 @@
-from decouple import config, Csv
+import environ
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -7,31 +8,33 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
-DEBUG = config('DEBUG', default=True, cast=bool)
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
-SECRET_KEY = config('SECRET_KEY')
+# django-environ
+env = environ.Env()
+env_file = os.path.join(BASE_DIR, '.env')
+env.read_env(env_file)
+
+DEBUG = env.bool('DEBUG', True)
+SECRET_KEY = env('SECRET_KEY')
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 
 # DB
-USE_PROD_DB = config('USE_PROD_DB', default=False, cast=bool)
-DEV_DB_NAME = config('DEV_DB_NAME')
-DEV_DB_USER = config('DEV_DB_USER')
-DEV_DB_PASSWORD = config('DEV_DB_PASSWORD')
-DEV_DB_HOST = config('DEV_DB_HOST')
-DEV_DB_PORT = config('DEV_DB_PORT')
+DEV_DB_NAME = env('DEV_DB_NAME')
+DEV_DB_USER = env('DEV_DB_USER')
+DEV_DB_PASSWORD = env('DEV_DB_PASSWORD')
+DEV_DB_HOST = env('DEV_DB_HOST')
+DEV_DB_PORT = env.int('DEV_DB_PORT')
 
 # Redis
-USE_CACHE = config('USE_CACHE', default=False, cast=bool)
-USE_PROD_REDIS = config('USE_PROD_REDIS', default=False, cast=bool)
-DEV_REDIS_URL = config('DEV_REDIS_URL')
+USE_CACHE = env.bool('USE_CACHE', False)
+REDIS_URL = env('REDIS_URL')
 
 # Misc
-BASE_URL = config('BASE_URL')
-DEFAULT_HASH_LENGTH = config('DEFAULT_HASH_LENGTH', default=6, cast=int)
-USE_CAPTCHA = config('USE_CAPTCHA', default=True, cast=bool)
-RESULTS_PER_PAGE = config('RESULTS_PER_PAGE', default=10, cast=int)
+BASE_URL = env('BASE_URL')
+DEFAULT_HASH_LENGTH = env.int('DEFAULT_HASH_LENGTH', 6)
+USE_CAPTCHA = env.bool('USE_CAPTCHA', True)
+RESULTS_PER_PAGE = env.int('RESULTS_PER_PAGE', 10)
 
 AUTH_USER_MODEL = 'users.User'
-
 
 # Application definition
 
@@ -106,20 +109,16 @@ WSGI_APPLICATION = 'urlshortener.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-if USE_PROD_DB:
-	pass
-else:
-	DATABASES = {
-		'default': {
-			'ENGINE': 'django.db.backends.postgresql_psycopg2',
-			'NAME': DEV_DB_NAME,
-			'USER': DEV_DB_USER,
-			'PASSWORD': DEV_DB_PASSWORD,
-			'HOST': DEV_DB_HOST,
-			'PORT': DEV_DB_PORT,
-		}
+DATABASES = {
+	'default': {
+		'ENGINE': 'django.db.backends.postgresql',
+		'NAME': DEV_DB_NAME,
+		'USER': DEV_DB_USER,
+		'PASSWORD': DEV_DB_PASSWORD,
+		'HOST': DEV_DB_HOST,
+		'PORT': DEV_DB_PORT,
 	}
+}
 
 
 SESSION_COOKIE_AGE = 9.461*(10**7)  # 3yrs. (default is 1209600 - 2weeks)
@@ -129,35 +128,32 @@ if USE_CACHE:
 
 	# Caching (https://github.com/jazzband/django-redis, 
 	# https://docs.djangoproject.com/en/3.2/topics/cache/)
-	if USE_PROD_REDIS:
-		pass
-	else:
-		CACHES = {
-			'default': {
-				'TIMEOUT': 43200,  # Default is 300(seconds)
-				'BACKEND': 'django_redis.cache.RedisCache',
-				'LOCATION': DEV_REDIS_URL,
-				'OPTIONS': {
-					'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-				}
+	CACHES = {
+		'default': {
+			'TIMEOUT': 43200,  # Default is 300(seconds)
+			'BACKEND': 'django_redis.cache.RedisCache',
+			'LOCATION': REDIS_URL,
+			'OPTIONS': {
+				'CLIENT_CLASS': 'django_redis.client.DefaultClient',
 			}
 		}
+	}
 
-		# CACHES = {
-		# 	'default': {
-		# 		'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
-		# 		'LOCATION': 'cache_table',
-		# 	}
-		# }
-		# python manage.py createcachetable --dry-run
+	# CACHES = {
+	# 	'default': {
+	# 		'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+	# 		'LOCATION': 'cache_table',
+	# 	}
+	# }
+	# python manage.py createcachetable --dry-run
 
-		# CACHES = {
-		# 	'default': {
-		# 		'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-		# 		'TIMEOUT': 300,  # The default(300s = 5mins)
-		# 		# 'TIMEOUT': 60 * 60 * 24,  # 86400(s)=24h
-		# 	}
-		# }
+	# CACHES = {
+	# 	'default': {
+	# 		'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+	# 		'TIMEOUT': 300,  # The default(300s = 5mins)
+	# 		# 'TIMEOUT': 60 * 60 * 24,  # 86400(s)=24h
+	# 	}
+	# }
 
 
 # Password validation
@@ -196,6 +192,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATIC_URL = '/static/'
 
 # Default primary key field type

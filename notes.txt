@@ -1,17 +1,9 @@
-source /home/sergeman/.virtualenvs/urlshortener-env/bin/activate 
+env path: source ~/.virtualenvs/urlshortener-env/bin/activate 
 
 
-whitenoise==
-django-debug-toolbar==
 
-
-TODO:
-   BACKEND:
-      - use whitenoise with cloudfront
-      - write tests
-   
-   FRONTEND:
-      - fix support link (buy me a coffee...)
+- use whitenoise with cloudfront/gcloud
+- fix support link (buy me a coffee...)
 
 
 TO INSTALL:
