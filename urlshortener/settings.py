@@ -18,15 +18,15 @@ SECRET_KEY = env('SECRET_KEY')
 ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 
 # DB
-DEV_DB_NAME = env('DEV_DB_NAME')
-DEV_DB_USER = env('DEV_DB_USER')
-DEV_DB_PASSWORD = env('DEV_DB_PASSWORD')
-DEV_DB_HOST = env('DEV_DB_HOST')
-DEV_DB_PORT = env.int('DEV_DB_PORT')
+DEV_DB_NAME = env('DEV_DB_NAME', default=None)
+DEV_DB_USER = env('DEV_DB_USER', default=None)
+DEV_DB_PASSWORD = env('DEV_DB_PASSWORD', default=None)
+DEV_DB_HOST = env('DEV_DB_HOST', default=None)
+DEV_DB_PORT = env.int('DEV_DB_PORT', default=None)
 
 # Redis
 USE_CACHE = env.bool('USE_CACHE', False)
-REDIS_URL = env('REDIS_URL', default='')
+REDIS_URL = env('REDIS_URL', default=None)
 
 # Misc
 BASE_URL = env('BASE_URL')
