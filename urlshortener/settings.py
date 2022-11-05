@@ -26,7 +26,7 @@ DEV_DB_PORT = env.int('DEV_DB_PORT')
 
 # Redis
 USE_CACHE = env.bool('USE_CACHE', False)
-REDIS_URL = env('REDIS_URL')
+REDIS_URL = env('REDIS_URL', default='')
 
 # Misc
 BASE_URL = env('BASE_URL')
@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 	'django.contrib.contenttypes',
 	'django.contrib.sessions',
 	'django.contrib.messages',
+   'whitenoise.runserver_nostatic',  # Added, needed in development only
 	'django.contrib.staticfiles',
 	'django.contrib.humanize',  # Added
 
