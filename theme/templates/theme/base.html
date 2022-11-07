@@ -12,13 +12,14 @@
 		<link rel="shortcut icon" type="image/x-icon" href="{% static 'img/favicon.png' %}">
 		{% tailwind_css %}
 		<link rel="stylesheet" href="{% static 'fontawesomefree/css/all.min.css' %}">
-		{% comment %} <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"> {% endcomment %}
-		<link rel="stylesheet" href="{% static 'css/toastify.min.css' %}">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+		{% comment %} <link rel="stylesheet" href="{% static 'css/toastify.min.css' %}"> {% endcomment %}
 		<link rel="stylesheet" href="{% static 'css/base.css' %}">
 
-		<script src="{% static 'js/jquery-3.6.0.min.js' %}"></script>
-		{% comment %} <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script> {% endcomment %}
-		<script src="{% static 'js/toastify-js.js' %}"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+		{% comment %} <script src="{% static 'js/jquery-3.6.0.min.js' %}"></script> {% endcomment %}
+		<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+		{% comment %} <script src="{% static 'js/toastify-js.js' %}"></script> {% endcomment %}
 		<script src="{% static 'js/jquery.blockUI.js' %}"></script>
 		{% block extra_assets %}
 		{% endblock extra_assets %}
@@ -69,7 +70,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="https://github.com/Sergecodes/url-shortener" class="sm:hover:text-2xl">
+					<a target="_blank" href="https://github.com/Sergecodes/url-shortener" class="sm:hover:text-2xl">
 						GitHub
 					</a>
 				</li>
