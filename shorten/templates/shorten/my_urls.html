@@ -4,7 +4,7 @@
 
 
 {% block content %}
-<div class="container mt-[5vh] mx-auto">
+<div class="container mt-[5vh] h-[90vh] mx-auto">
    <!-- URLs section -->
    <section class="shadow pt-6 mb-20">
       <div class="mb-12 mr-8 text-right">
@@ -31,15 +31,15 @@
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-y text-[0.9rem]">
          {% for short_url in page_obj %}
          {% with long_url=short_url.long_url hash=short_url.hash url=short_url.url %}
-         {% qr_url_from_text url size='T' version=2 image_format='png' as qr_url %}
+         {% qr_url_from_text url size='T' version=12 image_format='png' as qr_url %}
          <div class="flex pt-6 mx-auto px-2 {% if forloop.counter == 2 %}md:border-none{% endif %} {% if forloop.counter == 3 %}lg:border-none{% endif %}">
             <span>
                <i class="fa fa-link" aria-hidden="true"></i>
             </span>
             <div class="ml-2 md:mr-3 break-all"> {# break-all to account for super long urls #}
                <p class="flex justify-between">
-                  <span class="font-bold break-normal">{{ url }}</span>
-                  <span class="text-gray-400 text-xs ml-8 md:ml-[1.2rem]" title="{{ short_url.created_on }}">
+                  <span class="font-bold">{{ url }}</span>
+                  <span class="text-gray-400 text-xs ml-8 md:ml-[1.2rem] break-all" title="{{ short_url.created_on }}">
                      {{ short_url.created_on|naturaltime }} 
                   </span>
                </p>
@@ -60,7 +60,7 @@
                   <button class="clickBtn mr-5" data-text="{{ url }}" type="button">
                      <i class="fa fa-copy" aria-hidden="true"></i> Copy
                   </button>
-                  <a href="{{ qr_url }}" download="{{ url }}.png">
+                  <a class="inline-block mt-2" href="{{ qr_url }}" download="{{ url }}.png">
                      <img 
                         class="inline w-6"
                         src="{{ qr_url }}" 
@@ -104,7 +104,7 @@
          </div>
          {% endwith %}
          {% empty %}
-         <p>You haven't shortened any URLs yet</p>
+         <p class="text-center mb-8">You haven't shortened any URLs yet</p>
          {% endfor %}
       </div>
       {% if is_paginated %}

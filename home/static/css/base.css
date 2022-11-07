@@ -3,6 +3,10 @@
    --teal: #14b8a6;
 }
 
+html, 
+body {
+   height: 100%;
+}
 
 .no-style-btn {
    border: none;
@@ -64,3 +68,4 @@
    font-weight: normal !important;
 }
 
+ 

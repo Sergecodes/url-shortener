@@ -10,3 +10,4 @@ TO INSTALL:
 - install nodejs
 - setup django-tailwind (https://django-tailwind.readthedocs.io/en/latest/installation.html)
 - setup geoip2 (https://docs.djangoproject.com/en/3.2/ref/contrib/gis/geoip2)
+- run apt-get -y install libz-dev libjpeg-dev libfreetype6-dev python-dev for django-simple-captcha

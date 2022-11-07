@@ -138,7 +138,7 @@
                   Moreover, your links are available for 3 years, after which you won't
                   be able to see them.<br><br>
                   If you really need authentication support, comment/vote 
-                  <a class="text-teal-600" href="https://www.github.com/Sergecodes/url-shortener/issues/1">this issue</a>
+                  <a class="text-teal-600" target="_blank" href="https://www.github.com/Sergecodes/url-shortener/issues/1">this issue</a>
                   on GitHub.
                </p>
             </div>
@@ -164,7 +164,8 @@
                   </p>
                   <p class="mb-7">
                      <span class="text-teal-700 mr-1 js-numVisits"></span>
-                     <a href="{% url 'shorten:stats' '[[hash]]' %}" class="js-stats">
+                     {# hashhashhash will be raplaced with the desired hash #}
+                     <a href="{% url 'shorten:stats' 'hashhashhash' %}" class="js-stats">
                         <i class="fa fa-bar-chart" aria-hidden="true"></i>
                         View stats
                      </a>
@@ -232,6 +233,9 @@
       closeOnButton: true,
    });
 
+   {# Apparently we can't alias these tags globally #}
+   {% get_use_captcha as USE_CAPTCHA %}
+   {% if USE_CAPTCHA %}
    /* Display reload icon after captcha label */
    var reloadIcon = document.createElement('i');
    reloadIcon.setAttribute('aria-label', 'Change captcha');
@@ -263,6 +267,7 @@
          }
       });
    }
+   {% endif %}
 
    function onSubmitURLForm() {
       event.preventDefault();
@@ -282,7 +287,7 @@
          },
          success: function(result, status, jqXHR) {
             // Update modal
-            console.log(result);
+            // console.log(result);
             var { url, long_url, qr_url, hash } = result;
             var { num_visits, num_visits_ft } = result;
 
@@ -290,7 +295,7 @@
             $('#resultModal span.js-longUrl').text(long_url.url);
             $('#resultModal span.js-numVisits').text(`${num_visits_ft} visit${num_visits > 1 ? 's' : ''}`);
             $('#resultModal a.js-stats').each(function (idx, ele) {
-               ele.href = ele.href.replace('[[hash]]', hash);
+               ele.href = ele.href.replace('hashhashhash', hash);
             });
             $('#resultModal a.js-url').attr({ href: url });
             $('#resultModal button.js-url').attr({ 'data-text': url });
@@ -300,8 +305,11 @@
                ele.href = ele.href.replace('[[url]]', url);
             });
             
+            {% get_use_captcha as USE_CAPTCHA %}
+            {% if USE_CAPTCHA %}
             // Get new captcha(the previous captcha will be invalid)
             reloadIcon.click();
+            {% endif %}
 
             // Display modal
             modal.open('#resultModal');

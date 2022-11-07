@@ -72,6 +72,7 @@ if DEBUG:
 MIDDLEWARE = [
 	'django_hosts.middleware.HostsRequestMiddleware',  # for django_hosts
 	'django.middleware.security.SecurityMiddleware',
+   'whitenoise.middleware.WhiteNoiseMiddleware',  # for whitenoise
 	'django.contrib.sessions.middleware.SessionMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',

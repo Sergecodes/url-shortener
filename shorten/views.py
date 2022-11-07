@@ -87,7 +87,7 @@ def shorten_url(request):
 				long_url_dict = short_url.long_url.__dict__.copy()
 				long_url_dict.pop('_state')
 
-				qr_options = QRCodeOptions(size='T', version=2, image_format='png')
+				qr_options = QRCodeOptions(size='T', version=12, image_format='png')
 
 				result.update({
 					'url': short_url.url,

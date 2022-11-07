@@ -47,7 +47,7 @@
 						</a>
 					</li>
 					<li>
-						<a href="https://www.buymeacoffee.com/sergedurand" class="border border-solid p-3 rounded-full text-red-400 hover:border-gray-400">
+						<a target="_blank" href="https://www.buymeacoffee.com/sergedurand" class="border border-solid p-3 rounded-full text-red-400 hover:border-gray-400">
 							Support ❤️
 						</a>
 					</li>
@@ -74,7 +74,7 @@
 					</a>
 				</li>
 				<li>
-					<a href="#" class="sm:hover:text-2xl">
+					<a target="_blank" href="https://www.buymeacoffee.com/sergedurand" class="sm:hover:text-2xl">
 						Cup of coffee
 					</a>
 				</li>
@@ -86,7 +86,7 @@
 		<script>
 			$(document).ajaxError(function(event, jqXHR, settings, thrownError) {
 				console.log(jqXHR);
-				console.log(settings);
+				// console.log(settings);
 
 				var defaultMsg = (function() {
 					var main = "An error occured, refresh the page and try again. <br> <a href='mailto:sergedurand205@gmail.com' style='text-decoration: underline;'>Contact us</a> if it persists.";
@@ -121,7 +121,7 @@
 			});
 
 			function copyLink() {
-				console.log(this);
+				// console.log(this);
 				navigator.clipboard.writeText(this.dataset.text).then(function() {
 					Toastify({
 						text: "Link copied to clipboard.",
@@ -175,7 +175,7 @@
 					gravity: 'bottom',
 					position: 'right',
 					stopOnFocus: true,
-					destination: '#',  // TODO link to about cookies page
+					destination: 'https://www.aboutcookies.org', 
 					newWindow: true,
 					escapeMarkup: false,
 					style: {

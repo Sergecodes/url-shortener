@@ -1,7 +1,6 @@
 ### Used by AZURE ###
 from .settings import *
 
-
 # Configure the domain name using the environment variable
 # that Azure automatically creates for us.
 SITE_HOSTNAME = env('WEBSITE_HOSTNAME')
@@ -24,9 +23,9 @@ try:
 except ValueError:
 	pass
 
-# Add whitenoise directly after security middleware
-sec_middleware_idx = MIDDLEWARE.index('django.middleware.security.SecurityMiddleware')
-MIDDLEWARE.insert(sec_middleware_idx + 1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+# Add whitenoise directly after security middleware(in case it hasn't been done in base settings)
+# sec_middleware_idx = MIDDLEWARE.index('django.middleware.security.SecurityMiddleware')
+# MIDDLEWARE.insert(sec_middleware_idx + 1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 # Static files config
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  

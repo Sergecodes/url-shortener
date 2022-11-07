@@ -1,3 +1,4 @@
+import uuid
 from django.core.cache import cache
 from django.test import TestCase
 
@@ -26,6 +27,18 @@ class ShortURLTestCase(TestCase):
 
 		self.short_url.refresh_from_db()
 		self.assertEqual(self.short_url.num_visits, 2)
+
+
+class BrowserTestCase(TestCase):
+	def setUp(self):
+		pass
+
+	def test_unique_random_uuid_generated(self):
+		"""Check that n generated uuids are unique"""
+		n = 1000000
+		uuid_list = [str(uuid.uuid4()) for i in range(n)]
+		uuid_set = set(uuid_list)  # Generate unique set of uuids
+		self.assertEqual(len(uuid_set), len(uuid_list))
 
 
 class CacheTestCase(TestCase):
