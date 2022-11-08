@@ -117,24 +117,22 @@ def redirect_url(request, hash):
 	else:
 		short_url = get_object_or_404(ShortURL, hash=hash)
 
-	with transaction.atomic():
-		# Add visits & update cache
-		short_url.num_visits = F('num_visits') + 1
-		short_url.save(update_fields=['num_visits'])
-		Visit.objects.create(
-			short_url=short_url, 
-			browser_name=list(get_browser_dict(request))[0], 
-			ip_address=get_ip(request)
-		)
+	num_visits = short_url.num_visits
+	Visit.objects.create(
+		short_url=short_url, 
+		browser_name=list(get_browser_dict(request))[0], 
+		ip_address=get_ip(request)
+	)
 
-		if USE_CACHE:
-			## Update cache
-			# Do this so as to get numeric val of num_visits without doing a refresh_from_db()
-			# else it will be a "CombinedExpression" instance
-			short_url.num_visits += 1  
-			short_url_key1 = f'short_url_url_{short_url.long_url.url}_browser_{short_url.browser.uuid}'
-			short_url_key2 = f'short_url_{hash}'
-			cache.set_many({short_url_key1: short_url, short_url_key2: short_url})
+	if USE_CACHE:
+		## Update cache
+		# Do this so as to get numeric val of num_visits without doing a refresh_from_db()
+		# else it will be a "CombinedExpression" instance
+		short_url.num_visits = num_visits + 1 
+		short_url_key1 = f'short_url_url_{short_url.long_url.url}_browser_{short_url.browser.uuid}'
+		short_url_key2 = f'short_url_{hash}'
+		cache.set_many({short_url_key1: short_url, short_url_key2: short_url})
+		short_url.num_visits = num_visits   # Set back to original value
 
 	# If previewing is available, redirect to preview page. else redirect to long url page
 	if request.session.get('preview_urls'):
@@ -268,6 +266,8 @@ def stats(request, hash):
 	for visit in all_visits:
 		if ip := visit.ip_address:
 			city_info = g.city(ip)
+			print('ip', ip)
+			print('city_info', city_info)
 			city, country = city_info['city'], city_info['country_name']
 
 			if city:

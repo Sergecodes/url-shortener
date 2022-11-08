@@ -4,7 +4,7 @@
 
 
 {% block content %}
-<div class="container mt-[5vh] h-[90vh] mx-auto">
+<div class="container mt-[5vh] mx-auto {% if not page_obj.object_list %} h-[70vh] {% endif %}">
    <!-- URLs section -->
    <section class="shadow pt-6 mb-20">
       <div class="mb-12 mr-8 text-right">
@@ -28,7 +28,7 @@
       <h1 class="text-3xl text-center text-gray-600 mb-10">
          My Recent URLs
       </h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-y text-[0.9rem]">
+      <div class="grid {% if page_obj.object_list %}grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-y {% endif %} text-[0.9rem]">
          {% for short_url in page_obj %}
          {% with long_url=short_url.long_url hash=short_url.hash url=short_url.url %}
          {% qr_url_from_text url size='T' version=12 image_format='png' as qr_url %}
