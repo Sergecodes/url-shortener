@@ -14,8 +14,8 @@ DBNAME = env('DBNAME')
 DBUSER = env('DBUSER')
 DBPASS = env('DBPASS')
 
-ALLOWED_HOSTS = [SITE_HOSTNAME]
-CSRF_TRUSTED_ORIGINS = ['https://'+ SITE_HOSTNAME]
+ALLOWED_HOSTS = [SITE_HOSTNAME, '.tinyy.ink', ]
+CSRF_TRUSTED_ORIGINS = [SITE_HOSTNAME, '.tinyy.ink', ]
 
 # WhiteNoise configuration
 try:
