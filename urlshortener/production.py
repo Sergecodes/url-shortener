@@ -30,12 +30,12 @@ except ValueError:
 # Static files config
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  
 
-# Configure Postgres database
+# Configure database
 DATABASES = {
 	'default': {
-		'ENGINE': 'django.db.backends.postgresql',
+		'ENGINE': 'django.db.backends.mysql',
 		'NAME': DBNAME,
-		'HOST': hostname + '.postgres.database.azure.com',
+		'HOST': hostname + '.mysql.database.azure.com',
 		'USER': DBUSER,
 		'PASSWORD': DBPASS 
 	}
