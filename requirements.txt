@@ -2,6 +2,7 @@ Django==3.2.16
 django-extensions==3.2.1
 django-redis==5.2.0
 psycopg2==2.9.3
+mysqlclient==2.1.1
 shortuuid==1.0.9
 django-simple-captcha==0.5.17
 django-tailwind==3.4.0
