@@ -1,0 +1,25 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "==3.2.16"
+django-extensions = "==3.2.1"
+django-redis = "==5.2.0"
+psycopg2 = "==2.9.3"
+mysqlclient = "==2.1.1"
+shortuuid = "==1.0.9"
+django-simple-captcha = "==0.5.17"
+django-tailwind = "==3.4.0"
+django-ipware = "==4.0.2"
+geoip2 = "==4.6.0"
+fontawesomefree = "==6.2.0"
+ua-parser = "==0.16.1"
+user-agents = "==2.2.0"
+django-user-agents = "==0.4.0"
+
+[dev-packages]
+
+[requires]
+python_version = "3.10"

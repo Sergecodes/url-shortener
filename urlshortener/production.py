@@ -19,25 +19,31 @@ CSRF_TRUSTED_ORIGINS = [SITE_HOSTNAME, '.tinyy.ink', ]
 
 # WhiteNoise configuration
 try:
-	INSTALLED_APPS.remove('whitenoise.runserver_nostatic')
+    INSTALLED_APPS.remove('whitenoise.runserver_nostatic')
 except ValueError:
-	pass
+    pass
 
 # Add whitenoise directly after security middleware(in case it hasn't been done in base settings)
 # sec_middleware_idx = MIDDLEWARE.index('django.middleware.security.SecurityMiddleware')
 # MIDDLEWARE.insert(sec_middleware_idx + 1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
 # Static files config
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Configure database
-DATABASES = {
-	'default': {
-		'ENGINE': 'django.db.backends.mysql',
-		'NAME': DBNAME,
-		'HOST': hostname + '.mysql.database.azure.com',
-		'USER': DBUSER,
-		'PASSWORD': DBPASS 
-	}
-}
+# DATABASES = {
+# 	'default': {
+# 		'ENGINE': 'django.db.backends.mysql',
+# 		'NAME': DBNAME,
+# 		'HOST': hostname + '.mysql.database.azure.com',
+# 		'USER': DBUSER,
+# 		'PASSWORD': DBPASS
+# 	}
+# }
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
